@@ -329,7 +329,7 @@
         timeLeft--;
         timeDisplay.textContent = timeLeft + 's';
         if (timeLeft <= 0) endGame();
-      }, 1000);
+      }, 500);
       
       // Spawn random icons
       spawnInterval = setInterval(spawnIcon, 800);
@@ -358,7 +358,7 @@
         icon.remove();
       });
       
-      // Auto-remove after 1.0s if not clicked
+      // Auto-remove after 0.5s if not clicked
       setTimeout(() => {
         if (icon.parentNode) icon.remove();
       }, 1000);
