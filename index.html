@@ -7,11 +7,147 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-   <link href="css/style.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script src="js/script.js"></script>
   <style>
-   
+    :root {
+      --bg: #111;
+      --text: #eee;
+      --primary: #00ffcc;
+      --card-bg: #1a1a1a;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      background: #000;
+      z-index: 1000;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+    nav a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 700;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    nav a:hover {
+      background: var(--primary);
+      color: #000;
+    }
+    header {
+      text-align: center;
+      padding: 80px 20px 40px;
+    }
+    header h1 {
+      font-size: 42px;
+      color: var(--primary);
+    }
+    header p {
+      color: #ccc;
+      font-size: 18px;
+    }
+    .hero-img {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .hero-img img {
+      width: 300px;
+      border-radius: 12px;
+      border: 5px solid var(--primary);
+    }
+    section {
+      padding: 80px 30px;
+      max-width: 1400px;
+      margin: auto;
+    }
+    h2 {
+      color: var(--primary);
+      margin-bottom: 30px;
+      font-size: 32px;
+    }
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+    .shop-item {
+      background: var(--card-bg);
+      border: 2px solid var(--primary);
+      border-radius: 10px;
+      overflow: hidden;
+      text-align: center;
+      padding: 20px;
+    }
+    .shop-item img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+    }
+    .shop-item h3 {
+      margin: 12px 0 6px;
+    }
+    .shop-item p {
+      color: #ccc;
+    }
+    .shop-item a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: var(--primary);
+      color: black;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+    .shop-item a:hover {
+      background: #00c896;
+    }
+    .contact, .community, .tracker {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 40px;
+      margin-top: 50px;
+    }
+    footer {
+      background: #000;
+      color: #aaa;
+      text-align: center;
+      padding: 30px;
+      font-size: 16px;
+    }
+    footer a {
+      color: var(--primary);
+      margin: 0 10px;
+      text-decoration: none;
+    }
+    input, select, button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #888;
+    }
+    button {
+      background: var(--primary);
+      color: black;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -29,10 +165,119 @@
 </header>
 
 <div class="hero-img">
-    <img src="image/sa3.jpg" alt="Salman K Abdool" class="glowing-profile">
+    <img src="C:\Users\Wassim Emamdin\OneDrive\Desktop/mmma/image/sa3.jpg" alt="Salman K Abdool" class="glowing-profile">
   </div>
 </section>
 
+<style>
+  /* Add this to your existing styles */
+  .game-section {
+    background: #1a1a1a;
+    padding: 40px 20px;
+    text-align: center;
+  }
+  
+  .game-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid var(--primary);
+  }
+  
+  #gameArea {
+    width: 100%;
+    height: 400px;
+    background: #333;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .game-controls {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+  
+  .game-controls button {
+    background: var(--primary);
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .game-controls button:hover {
+    background: #00c896;
+  }
+  
+  .game-controls p {
+    font-size: 18px;
+    color: var(--primary);
+    margin: 10px 0;
+  }
+  
+  /* Game elements */
+  .dumbbell {
+    position: absolute;
+    width: 40px;
+    height: 20px;
+    background: #555;
+    border-radius: 10px;
+    z-index: 10;
+  }
+  
+  .dumbbell:before, .dumbbell:after {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: #777;
+    border-radius: 50%;
+    top: 2.5px;
+  }
+  
+  .dumbbell:before {
+    left: -10px;
+  }
+  
+  .dumbbell:after {
+    right: -10px;
+  }
+  
+  .target {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: #d33;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .obstacle {
+    position: absolute;
+    background: #8b4513;
+    border-radius: 5px;
+  }
+  
+  .ground {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 20px;
+    background: #5c4033;
+  }
+</style>
 
 <section id="reaction-game" style="background:#1a1a1a; padding:40px; text-align:center; border-radius:12px; margin:30px 0;">
   <h2 style="color:#00ffcc; margin-bottom:20px;">⚡ Reaction Speed Challenge</h2>
@@ -49,6 +294,88 @@
   </div>
 </section>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('game-container');
+    const startBtn = document.getElementById('start-btn');
+    const scoreDisplay = document.getElementById('score');
+    const timeDisplay = document.getElementById('time');
+    
+    let score = 0;
+    let timeLeft = 30;
+    let gameActive = false;
+    let timer;
+    let spawnInterval;
+    
+    // Fitness icons
+    const icons = ['🏋️', '🏃', '🥊', '🧘', '🚴'];
+    
+    startBtn.addEventListener('click', startGame);
+    
+    function startGame() {
+      if (gameActive) return;
+      
+      // Reset game
+      container.innerHTML = '';
+      score = 0;
+      timeLeft = 30;
+      gameActive = true;
+      scoreDisplay.textContent = score;
+      timeDisplay.textContent = timeLeft + 's';
+      startBtn.textContent = 'PLAYING...';
+      
+      // Start timer
+      timer = setInterval(() => {
+        timeLeft--;
+        timeDisplay.textContent = timeLeft + 's';
+        if (timeLeft <= 0) endGame();
+      }, 1000);
+      
+      // Spawn random icons
+      spawnInterval = setInterval(spawnIcon, 800);
+    }
+    
+    function spawnIcon() {
+      if (!gameActive) return;
+      
+      const icon = document.createElement('div');
+      icon.textContent = icons[Math.floor(Math.random() * icons.length)];
+      icon.style.position = 'absolute';
+      icon.style.fontSize = '50px';
+      icon.style.cursor = 'pointer';
+      
+      // Random position
+      const x = Math.random() * (container.offsetWidth - 50);
+      const y = Math.random() * (container.offsetHeight - 50);
+      icon.style.left = x + 'px';
+      icon.style.top = y + 'px';
+      
+      // Click handler
+      icon.addEventListener('click', () => {
+        if (!gameActive) return;
+        score++;
+        scoreDisplay.textContent = score;
+        icon.remove();
+      });
+      
+      // Auto-remove after 1.5s if not clicked
+      setTimeout(() => {
+        if (icon.parentNode) icon.remove();
+      }, 1500);
+      
+      container.appendChild(icon);
+    }
+    
+    function endGame() {
+      gameActive = false;
+      clearInterval(timer);
+      clearInterval(spawnInterval);
+      startBtn.textContent = 'PLAY AGAIN';
+      container.innerHTML = `<div style="color:#00ffcc; font-size:24px; margin-top:100px;">Game Over! Score: ${score}</div>`;
+    }
+  });
+</script>
+
 <section id="shop">
   <h2>🛍️ Shop – Explore Our Gear</h2>
   <div class="shop-grid">
@@ -56,55 +383,55 @@
     <!-- You can copy-paste this block to add more products -->
     <!-- Placeholder example -->
     <div class="shop-item">
-      <img src="image/photo1.jpg" alt="T-Shirt Model 1">
+      <img src="C:\Users\Wassim Emamdin\OneDrive\Desktop/mmma/image/photo1.jpg" alt="T-Shirt Model 1">
       <h3>Black MMA T-Shirt</h3>
       <p>Comfort fit, breathable training shirt</p>
       <a href="https://wa.me/23058127138?text=Interested%20in%20Black%20MMA%20T-Shirt">Order on WhatsApp</a>
     </div>
 	    <div class="shop-item">
-      <img src="image/photo2.jpg" alt="T-Shirt Model 1">
+      <img src="C:\Users\Wassim Emamdin\OneDrive\Desktop/mmma/image/photo2.jpg" alt="T-Shirt Model 1">
       <h3>Black MMA T-Shirt</h3>
       <p>Comfort fit, breathable training shirt</p>
       <a href="https://wa.me/23058127138?text=Interested%20in%20Black%20MMA%20T-Shirt">Order on WhatsApp</a>
     </div>
 		    <div class="shop-item">
-      <img src="image/photo3.jpg" alt="T-Shirt Model 1">
+      <img src="C:\Users\Wassim Emamdin\OneDrive\Desktop/mmma/image/photo3.jpg" alt="T-Shirt Model 1">
       <h3>Black MMA T-Shirt</h3>
       <p>Comfort fit, breathable training shirt</p>
       <a href="https://wa.me/23058127138?text=Interested%20in%20Black%20MMA%20T-Shirt">Order on WhatsApp</a>
     </div>
 		    <div class="shop-item">
-      <img src="image/photo4.jpg" alt="T-Shirt Model 1">
+      <img src="C:\Users\Wassim Emamdin\OneDrive\Desktop/mmma/image/photo4.jpg" alt="T-Shirt Model 1">
       <h3>Black MMA T-Shirt</h3>
       <p>Comfort fit, breathable training shirt</p>
       <a href="https://wa.me/23058127138?text=Interested%20in%20Black%20MMA%20T-Shirt">Order on WhatsApp</a>
     </div>
 		    <div class="shop-item">
-      <img src="image/photo5.jpg" alt="T-Shirt Model 1">
+      <img src="C:\Users\Wassim Emamdin\OneDrive\Desktop/mmma/image/photo5.jpg" alt="T-Shirt Model 1">
       <h3>Black MMA T-Shirt</h3>
       <p>Comfort fit, breathable training shirt</p>
       <a href="https://wa.me/23058127138?text=Interested%20in%20Black%20MMA%20T-Shirt">Order on WhatsApp</a>
     </div>
 		    <div class="shop-item">
-      <img src="image/photo6.jpg" alt="T-Shirt Model 1">
+      <img src="C:\Users\Wassim Emamdin\OneDrive\Desktop/mmma/image/photo6.jpg" alt="T-Shirt Model 1">
       <h3>Black MMA T-Shirt</h3>
       <p>Comfort fit, breathable training shirt</p>
       <a href="https://wa.me/23058127138?text=Interested%20in%20Black%20MMA%20T-Shirt">Order on WhatsApp</a>
     </div>
 		    <div class="shop-item">
-      <img src="image/photo8.jpg" alt="T-Shirt Model 1">
+      <img src="C:\Users\Wassim Emamdin\OneDrive\Desktop/mmma/image/photo8.jpg" alt="T-Shirt Model 1">
       <h3>Black MMA T-Shirt</h3>
       <p>Comfort fit, breathable training shirt</p>
       <a href="https://wa.me/23058127138?text=Interested%20in%20Black%20MMA%20T-Shirt">Order on WhatsApp</a>
     </div>
 		    <div class="shop-item">
-      <img src="image/photo10.jpg" alt="T-Shirt Model 1">
+      <img src="C:\Users\Wassim Emamdin\OneDrive\Desktop/mmma/image/photo10.jpg" alt="T-Shirt Model 1">
       <h3>Black MMA T-Shirt</h3>
       <p>Comfort fit, breathable training shirt</p>
       <a href="https://wa.me/23058127138?text=Interested%20in%20Black%20MMA%20T-Shirt">Order on WhatsApp</a>
     </div>
 		    <div class="shop-item">
-      <img src="image/photo11.jpg" alt="T-Shirt Model 1">
+      <img src="C:\Users\Wassim Emamdin\OneDrive\Desktop/mmma/image/photo11.jpg" alt="T-Shirt Model 1">
       <h3>Black MMA T-Shirt</h3>
       <p>Comfort fit, breathable training shirt</p>
       <a href="https://wa.me/23058127138?text=Interested%20in%20Black%20MMA%20T-Shirt">Order on WhatsApp</a>
@@ -205,25 +532,107 @@
 </footer>
 
 <script>
- 
+  function calcBMI() {
+    const w = parseFloat(document.getElementById('weight').value);
+    const h = parseFloat(document.getElementById('height').value) / 100;
+    const result = document.getElementById('bmiResult');
+    if (w > 0 && h > 0) {
+      const bmi = w / (h * h);
+      let category = '';
+      if (bmi < 18.5) category = 'Underweight';
+      else if (bmi < 25) category = 'Normal';
+      else if (bmi < 30) category = 'Overweight';
+      else category = 'Obese';
+      result.textContent = `BMI: ${bmi.toFixed(2)} (${category})`;
+    } else {
+      result.textContent = 'Enter valid values.';
+    }
+  }
+
+  let totalCalories = 0;
+  function addCalories() {
+    const foodSelect = document.getElementById('foodSelect');
+    const quantity = parseFloat(document.getElementById('quantity').value);
+    const calPerUnit = parseFloat(foodSelect.value);
+    if (!calPerUnit || isNaN(quantity)) return;
+    const cal = calPerUnit * quantity;
+    totalCalories += cal;
+    document.getElementById('totalCalories').textContent = totalCalories.toFixed(2);
+    document.getElementById('quantity').value = '';
+  }
 </script>
 <!-- Add this right before </body> -->
 <div class="cursor-light"></div>
 
 <style>
- 
+  .cursor-light {
+    position: fixed;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,255,204,0.2) 0%, rgba(0,255,204,0) 70%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  body:hover .cursor-light {
+    opacity: 1;
+  }
 </style>
 
 <script>
+  document.addEventListener('mousemove', (e) => {
+    const light = document.querySelector('.cursor-light');
+    light.style.left = `${e.clientX}px`;
+    light.style.top = `${e.clientY}px`;
+  });
   
+  // For mobile touch
+  document.addEventListener('touchmove', (e) => {
+    const light = document.querySelector('.cursor-light');
+    light.style.left = `${e.touches[0].clientX}px`;
+    light.style.top = `${e.touches[0].clientY}px`;
+  });
 </script>
  <style>
-   
+    /* Add this to your existing styles */
+    @keyframes intenseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(0, 255, 204, 0); }
+      50% { box-shadow: 0 0 50px 20px rgba(0, 255, 204, 0.9); }
+      100% { box-shadow: 0 0 10px 5px rgba(0, 255, 204, 0.5); }
+    }
+    
+    .hero-img img {
+      animation: intenseGlow 2s ease-out;
+      animation-fill-mode: forwards;
+      position: relative;
+      z-index: 10;
+    }
+    
+    /* Add a subtle persistent glow after animation */
+    .hero-img img:hover {
+      box-shadow: 0 0 25px 10px rgba(0, 255, 204, 0.7) !important;
+      transition: box-shadow 0.3s ease;
+    }
   </style>
 </head>
 <body>
 <script>
-   
+    // Trigger re-animation when clicking/touching the image
+    document.querySelector('.hero-img img').addEventListener('click', function() {
+      this.style.animation = 'none';
+      void this.offsetWidth; // Trigger reflow
+      this.style.animation = 'intenseGlow 2s ease-out';
+    });
+    
+    // For mobile touch
+    document.querySelector('.hero-img img').addEventListener('touchstart', function() {
+      this.style.animation = 'none';
+      void this.offsetWidth;
+      this.style.animation = 'intenseGlow 2s ease-out';
+    });
   </script>
   <section id="contact" class="contact-section">
   <div class="contact-container">
@@ -299,7 +708,193 @@
 </section>
 
 <style>
+.contact-section {
+  background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+  padding: 80px 20px;
+  position: relative;
+  overflow: hidden;
+}
 
+.contact-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0,255,204,0.1) 0%, transparent 70%);
+  animation: pulse 15s infinite alternate;
+}
+
+@keyframes pulse {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(25%, 15%); }
+  50% { transform: translate(0, 25%); }
+  75% { transform: translate(-15%, 0); }
+  100% { transform: translate(0, 0); }
+}
+
+.contact-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.section-title {
+  text-align: center;
+  color: #00ffcc;
+  font-size: 2.5rem;
+  margin-bottom: 60px;
+  text-shadow: 0 0 15px rgba(0,255,204,0.5);
+}
+
+.contact-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 30px;
+  background: rgba(26, 26, 26, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(0,255,204,0.3);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5), 
+              0 0 30px rgba(0,255,204,0.2) inset;
+  padding: 40px;
+}
+
+.contact-info, .contact-social {
+  flex: 1;
+  min-width: 300px;
+}
+
+.glow-card {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 12px;
+  background: rgba(34, 34, 34, 0.7);
+  border: 1px solid rgba(0,255,204,0.2);
+  transition: all 0.3s ease;
+}
+
+.glow-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 20px rgba(0,255,204,0.3);
+  border-color: #00ffcc;
+}
+
+.icon-wrapper {
+  width: 60px;
+  height: 60px;
+  background: rgba(0,255,204,0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+  border: 1px solid #00ffcc;
+  box-shadow: 0 0 15px rgba(0,255,204,0.3);
+  transition: all 0.3s ease;
+}
+
+.glow-card:hover .icon-wrapper {
+  background: rgba(0,255,204,0.2);
+  box-shadow: 0 0 20px rgba(0,255,204,0.5);
+  transform: scale(1.1);
+}
+
+.contact-icon {
+  font-size: 1.5rem;
+  color: #00ffcc;
+  text-shadow: 0 0 10px rgba(0,255,204,0.5);
+  transition: all 0.3s ease;
+}
+
+.glow-card:hover .contact-icon {
+  color: white;
+  text-shadow: 0 0 15px #00ffcc;
+}
+
+.contact-details h3 {
+  color: #00ffcc;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.contact-details p {
+  color: #ccc;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.contact-details a {
+  color: #00ffcc;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.contact-details a:hover {
+  text-shadow: 0 0 5px #00ffcc;
+}
+
+@media (max-width: 768px) {
+  .contact-card {
+    padding: 30px 20px;
+  }
+  
+  .contact-info, .contact-social {
+    flex: 100%;
+  }
+  
+  .icon-wrapper {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+  }
+}
+</style>
+  <style>
+  #miniPool {
+    max-width: 360px;
+    margin: 20px auto;
+    background: #2b5c3f;
+    border: 14px solid #5c3b1f;
+    border-radius: 16px;
+    position: relative;
+    user-select: none;
+    touch-action: none;
+  }
+  #poolCanvas {
+    width: 100%;
+    height: 180px;
+    display: block;
+    border-radius: 12px;
+    background: #0a3b16;
+  }
+  #winMessage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.85);
+    color: #fff;
+    padding: 16px 24px;
+    border-radius: 14px;
+    font-size: 18px;
+    text-align: center;
+    display: none;
+  }
+  #winMessage button {
+    margin-top: 10px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    background: #fff;
+    color: #222;
+    cursor: pointer;
+  }
 </style>
 
 <div id="miniPool">
@@ -311,7 +906,167 @@
 </div>
 
 <script>
-  
+  const canvas = document.getElementById('poolCanvas');
+  const ctx = canvas.getContext('2d');
+  const winMsg = document.getElementById('winMessage');
+  const playAgainBtn = document.getElementById('playAgainBtn');
+
+  const WIDTH = canvas.width;
+  const HEIGHT = canvas.height;
+
+  let ball = { x: WIDTH/4, y: HEIGHT/2, r: 14, dx: 0, dy: 0 };
+
+  const pocket = { x: WIDTH - 20, y: HEIGHT/2, r: 20 };
+
+  let dragging = false;
+  let dragStart = null;
+  let dragEnd = null;
+  let gameOver = false;
+
+  function drawTable() {
+    ctx.fillStyle = '#0a3b16';
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+    // Pocket
+    ctx.beginPath();
+    ctx.arc(pocket.x, pocket.y, pocket.r, 0, Math.PI * 2);
+    ctx.fillStyle = '#111';
+    ctx.fill();
+  }
+
+  function drawBall() {
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+    ctx.fillStyle = '#000';
+    ctx.shadowColor = '#0008';
+    ctx.shadowBlur = 10;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Draw '8' label
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 18px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('8', ball.x, ball.y);
+  }
+
+  function drawAimLine() {
+    if (!dragging || !dragStart || !dragEnd) return;
+    ctx.beginPath();
+    ctx.moveTo(ball.x, ball.y);
+    ctx.lineTo(dragEnd.x, dragEnd.y);
+    ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([10,6]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function distance(a, b) {
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
+
+  function updateBall() {
+    ball.x += ball.dx;
+    ball.y += ball.dy;
+
+    ball.dx *= 0.95;
+    ball.dy *= 0.95;
+
+    if (Math.abs(ball.dx) < 0.05) ball.dx = 0;
+    if (Math.abs(ball.dy) < 0.05) ball.dy = 0;
+
+    // Keep ball inside table
+    ball.x = Math.min(Math.max(ball.r, ball.x), WIDTH - ball.r);
+    ball.y = Math.min(Math.max(ball.r, ball.y), HEIGHT - ball.r);
+  }
+
+  function checkPocket() {
+    return distance(ball, pocket) < pocket.r;
+  }
+
+  function checkWin() {
+    if (checkPocket() && !gameOver) {
+      gameOver = true;
+      winMsg.style.display = 'block';
+      setTimeout(() => {
+        window.open('https://www.tiktok.com/@salmankhannutrition', '_blank');
+      }, 700);
+    }
+  }
+
+  function draw() {
+    drawTable();
+    drawBall();
+    drawAimLine();
+  }
+
+  function update() {
+    if (!gameOver) {
+      updateBall();
+      checkWin();
+    }
+    draw();
+    requestAnimationFrame(update);
+  }
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    if (e.touches) {
+      return {
+        x: e.touches[0].clientX - rect.left,
+        y: e.touches[0].clientY - rect.top,
+      };
+    } else {
+      return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
+    }
+  }
+
+  canvas.addEventListener('pointerdown', e => {
+    if (gameOver) return;
+    dragging = true;
+    dragStart = getPos(e);
+    dragEnd = dragStart;
+  });
+
+  canvas.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    dragEnd = getPos(e);
+  });
+
+  canvas.addEventListener('pointerup', e => {
+    if (!dragging) return;
+    dragging = false;
+
+    if (!dragStart || !dragEnd) return;
+
+    // Calculate power and angle based on drag direction (from ball to drag start)
+    const dx = dragStart.x - dragEnd.x;
+    const dy = dragStart.y - dragEnd.y;
+
+    let power = Math.min(20, Math.hypot(dx, dy) / 4);
+    if(power < 2) return; // ignore very weak shots
+
+    let angle = Math.atan2(dy, dx);
+
+    ball.dx = Math.cos(angle) * power;
+    ball.dy = Math.sin(angle) * power;
+
+    dragStart = dragEnd = null;
+  });
+
+  playAgainBtn.addEventListener('click', () => {
+    ball = { x: WIDTH/4, y: HEIGHT/2, r: 14, dx: 0, dy: 0 };
+    gameOver = false;
+    winMsg.style.display = 'none';
+  });
+
+  draw();
+  update();
 </script>
 
 
