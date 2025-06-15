@@ -295,86 +295,107 @@
 </section>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const container = document.getElementById('game-container');
-    const startBtn = document.getElementById('start-btn');
-    const scoreDisplay = document.getElementById('score');
-    const timeDisplay = document.getElementById('time');
-    
-    let score = 0;
-    let timeLeft = 30;
-    let gameActive = false;
-    let timer;
-    let spawnInterval;
-    
-    // Fitness icons
-    const icons = ['🏋️', '🏃', '🥊', '🧘', '🚴'];
-    
-    startBtn.addEventListener('click', startGame);
-    
-    function startGame() {
-      if (gameActive) return;
-      
-      // Reset game
-      container.innerHTML = '';
-      score = 0;
-      timeLeft = 30;
-      gameActive = true;
-      scoreDisplay.textContent = score;
-      timeDisplay.textContent = timeLeft + 's';
-      startBtn.textContent = 'PLAYING...';
-      
-      // Start timer
-      timer = setInterval(() => {
-        timeLeft--;
-        timeDisplay.textContent = timeLeft + 's';
-        if (timeLeft <= 0) endGame();
-      }, 500);
-      
-      // Spawn random icons
-      spawnInterval = setInterval(spawnIcon, 800);
-    }
-    
-    function spawnIcon() {
-      if (!gameActive) return;
-      
-      const icon = document.createElement('div');
-      icon.textContent = icons[Math.floor(Math.random() * icons.length)];
-      icon.style.position = 'absolute';
-      icon.style.fontSize = '50px';
-      icon.style.cursor = 'pointer';
-      
-      // Random position
-      const x = Math.random() * (container.offsetWidth - 50);
-      const y = Math.random() * (container.offsetHeight - 50);
-      icon.style.left = x + 'px';
-      icon.style.top = y + 'px';
-      
-      // Click handler
-      icon.addEventListener('click', () => {
-        if (!gameActive) return;
-        score++;
+    document.addEventListener('DOMContentLoaded', function() {
+      const container = document.getElementById('game-container');
+      const startBtn = document.getElementById('start-btn');
+      const scoreDisplay = document.getElementById('score');
+      const timeDisplay = document.getElementById('time');
+
+      let score = 0;
+      let timeLeft = 30;
+      let gameActive = false;
+      let timer;
+      let spawnInterval;
+      let difficultyLevel = 1;
+
+      const icons = ['🏋️', '🏃', '🥊', '🧘', '🚴', '💣'];
+
+      startBtn.addEventListener('click', startGame);
+
+      function startGame() {
+        if (gameActive) return;
+
+        // Reset
+        container.innerHTML = '';
+        score = 0;
+        timeLeft = 30;
+        difficultyLevel = 1;
+        gameActive = true;
         scoreDisplay.textContent = score;
-        icon.remove();
-      });
-      
-      // Auto-remove after 0.5s if not clicked
-      setTimeout(() => {
-        if (icon.parentNode) icon.remove();
-      }, 1000);
-      
-      container.appendChild(icon);
-    }
-    
-    function endGame() {
-      gameActive = false;
-      clearInterval(timer);
-      clearInterval(spawnInterval);
-      startBtn.textContent = 'PLAY AGAIN';
-      container.innerHTML = `<div style="color:#00ffcc; font-size:24px; margin-top:100px;">Game Over! Score: ${score}</div>`;
-    }
-  });
-</script>
+        timeDisplay.textContent = timeLeft + 's';
+        startBtn.textContent = 'PLAYING...';
+
+        timer = setInterval(() => {
+          timeLeft--;
+          timeDisplay.textContent = timeLeft + 's';
+
+          if (timeLeft % 10 === 0 && difficultyLevel < 4) {
+            difficultyLevel++;
+            adjustSpawnRate();
+          }
+
+          if (timeLeft <= 0) endGame();
+        }, 1000);
+
+        spawnInterval = setInterval(spawnIcon, 800);
+      }
+
+      function adjustSpawnRate() {
+        clearInterval(spawnInterval);
+        const rate = 800 - difficultyLevel * 200; // 800, 600, 400, 200
+        spawnInterval = setInterval(spawnIcon, rate);
+      }
+
+      function spawnIcon() {
+        if (!gameActive) return;
+
+        const icon = document.createElement('div');
+        const chosenIcon = icons[Math.floor(Math.random() * icons.length)];
+        icon.textContent = chosenIcon;
+        icon.style.position = 'absolute';
+        icon.style.fontSize = '30px'; // Smaller size
+        icon.style.cursor = 'pointer';
+        icon.style.userSelect = 'none';
+
+        const x = Math.random() * (container.offsetWidth - 40);
+        const y = Math.random() * (container.offsetHeight - 40);
+        icon.style.left = x + 'px';
+        icon.style.top = y + 'px';
+
+        icon.addEventListener('click', () => {
+          if (!gameActive) return;
+          if (chosenIcon === '💣') {
+            score = Math.max(0, score - 2);
+          } else {
+            score++;
+          }
+          scoreDisplay.textContent = score;
+          icon.remove();
+        });
+
+        // Slight move effect
+        setTimeout(() => {
+          icon.style.left = (x + 20 * (Math.random() - 0.5)) + 'px';
+          icon.style.top = (y + 20 * (Math.random() - 0.5)) + 'px';
+        }, 300);
+
+        // Auto-remove quickly
+        setTimeout(() => {
+          if (icon.parentNode) icon.remove();
+        }, 600); // Less visible time
+
+        container.appendChild(icon);
+      }
+
+      function endGame() {
+        gameActive = false;
+        clearInterval(timer);
+        clearInterval(spawnInterval);
+        startBtn.textContent = 'PLAY AGAIN';
+        container.innerHTML = `<div style="color:#00ffcc; font-size:24px; text-align:center; margin-top:100px;">Game Over! Score: ${score}</div>`;
+      }
+    });
+  </script>
 
 <section id="shop">
   <h2>🛍️ Shop – Explore Our Gear</h2>
