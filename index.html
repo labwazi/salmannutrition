@@ -358,10 +358,10 @@
         icon.remove();
       });
       
-      // Auto-remove after 1.5s if not clicked
+      // Auto-remove after 1.0s if not clicked
       setTimeout(() => {
         if (icon.parentNode) icon.remove();
-      }, 1500);
+      }, 1000);
       
       container.appendChild(icon);
     }
