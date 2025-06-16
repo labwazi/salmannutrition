@@ -1220,16 +1220,19 @@
 </script>
 
 </footer>
-<footer style="background:#111; color:#eee; padding:20px; font-family:sans-serif; text-align:center; max-width:360px; margin:auto; border-radius:10px;">
+<footer style="background:#111; color:#eee; padding:20px; font-family:sans-serif; text-align:center; max-width:360px; margin:auto; border-radius:10px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
   <h3 style="color:#e53935; margin-bottom:12px;">💪 Fitness Quote of the Moment 💪</h3>
-  <p id="fitnessQuote" style="font-style: italic; font-size: 18px; min-height: 70px; margin-bottom: 15px;"></p>
+  <p id="fitnessQuote" style="font-style: italic; font-size: 18px; min-height: 70px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center;"></p>
   <button id="newQuoteBtn" 
-          style="padding: 10px 20px; background: #e53935; border:none; border-radius: 6px; color: white; font-weight: bold; cursor:pointer;">
+          style="padding: 10px 20px; background: #e53935; border:none; border-radius: 6px; color: white; font-weight: bold; cursor:pointer; transition: all 0.3s ease;"
+          onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 10px rgba(229, 57, 53, 0.7)';"
+          onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';">
     New Quote
   </button>
+</footer>
 
 <script>
-(() => {
+document.addEventListener('DOMContentLoaded', function() {
   const quotes = [
     "No pain, no gain.",
     "Sweat is fat crying.",
@@ -1268,20 +1271,29 @@
     "When you feel like quitting, think about why you started.",
     "Pain is temporary, pride is forever.",
     "The difference between try and triumph is just a little umph!",
-    "Champions aren’t made in the gyms. Champions are made from something they have deep inside them.",
-    "The mind is the limit. As long as the mind can envision the fact that you can do something, you can do it.",
-    "Don’t limit yourself. Many people limit themselves to what they think they can do.",
+    "Champions aren’t made in gyms. Champions are made from something they have deep inside them.",
+    "The mind is the limit. As long as the mind can envision it, you can do it.",
+    "Don’t limit yourself to what you think you can do.",
     "You don’t get the ass you want by sitting on it.",
     "The best project you’ll ever work on is you.",
     "Your health is an investment, not an expense.",
-    "Fitness is not about being better than someone else; it’s about being better than you used to be.",
     "Some people want it to happen, some wish it would happen, others make it happen.",
     "Don’t let yesterday take up too much of today.",
     "Work hard. Dream big. Never give up.",
     "Strong is the new sexy.",
     "Act like a lady, lift like a boss.",
     "Good things come to those who sweat.",
-    "Be proud, but never satisfied."
+    "Be proud, but never satisfied.",
+    "Discipline is choosing between what you want now and what you want most.",
+    "The only workout you regret is the one you didn't do.",
+    "Rome wasn't built in a day, but they worked on it every day.",
+    "You don't have to be perfect, just better than yesterday.",
+    "Excuses don't burn calories.",
+    "Make sweat your best accessory.",
+    "The secret of getting ahead is getting started.",
+    "Your speed doesn't matter, forward is forward.",
+    "Fall in love with taking care of your body.",
+    "Energy and persistence conquer all things."
   ];
 
   const quoteElem = document.getElementById('fitnessQuote');
@@ -1290,13 +1302,24 @@
   function showRandomQuote() {
     const index = Math.floor(Math.random() * quotes.length);
     quoteElem.textContent = `"${quotes[index]}"`;
+    quoteElem.style.animation = 'none';
+    void quoteElem.offsetWidth; // Trigger reflow
+    quoteElem.style.animation = 'fadeIn 0.8s ease';
   }
 
-  btn.onclick = showRandomQuote;
-
-  // Show a quote immediately on load
+  btn.addEventListener('click', showRandomQuote);
+  
+  // Show initial quote
   showRandomQuote();
-})();
+});
+</script>
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
 
   
 </body>
