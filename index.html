@@ -278,126 +278,119 @@
     background: #5c4033;
   }
 </style>
-<section id="reaction-game" style="background:#1a1a1a; padding:40px 20px; text-align:center; border-radius:16px; color:white; font-family:sans-serif;">
-  <h2 style="color:#00ffcc; font-size:28px;">⚡ Tap & Burn Challenge</h2>
-  <p style="margin-bottom:20px;">Tap as many fitness icons as you can. Score 20+ for 10% OFF a shirt!</p>
+<section id="spin-game" style="background:#1a1a1a; padding:40px 20px; text-align:center; border-radius:16px; color:white; font-family:sans-serif;">
+  <h2 style="color:#00ffcc;">🎡 Spin & Win</h2>
+  <p>Try your luck and unlock exclusive offers on shirts!</p>
 
-  <div id="game-container" style="width:100%; max-width:400px; height:300px; margin:0 auto 20px; background:#222; border-radius:10px; position:relative; overflow:hidden; touch-action:manipulation;"></div>
+  <canvas id="wheel" width="300" height="300" style="border-radius:50%; background:#333; margin-top:20px;"></canvas>
+  <br><br>
+  <button id="spin-btn" style="padding:12px 24px; background:#00ffcc; border:none; color:#000; font-weight:bold; border-radius:8px; cursor:pointer;">SPIN</button>
 
-  <div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; align-items:center; margin-bottom:20px;">
-    <button id="start-btn" style="background:#00ffcc; color:#000; border:none; padding:12px 24px; border-radius:8px; font-weight:bold; cursor:pointer;">START</button>
-    <p>Score: <span id="score">0</span></p>
-    <p>Time: <span id="time">30s</span></p>
-  </div>
+  <div id="result" style="margin-top:20px; font-size:18px; color:#00ffcc;"></div>
 
-  <div id="result-message" style="margin-top:10px; font-size:18px; color:#00ffcc;"></div>
-
-  <!-- MODAL -->
-  <div id="victory-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999; justify-content:center; align-items:center;">
-    <div style="background:#fff; color:#000; padding:30px; border-radius:12px; text-align:center; max-width:90%; width:320px;">
-      <h3 style="margin-bottom:10px;">🏆 Congrats!</h3>
-      <p>You scored 20+ and earned <strong>10% OFF</strong> your next shirt!</p>
-      <p style="margin:12px 0; font-size:16px;">Use code: <strong>FIT10</strong></p>
-      <button onclick="window.location.href='https://labwazi.github.io/salmannutrition/#shop'" style="margin-top:10px; background:#00cc99; color:#fff; padding:10px 20px; border:none; border-radius:6px; cursor:pointer;">Buy Now</button>
+  <!-- Modal for rewards -->
+  <div id="reward-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:white; padding:30px; border-radius:12px; text-align:center; max-width:90%; width:320px;">
+      <h3 style="margin-bottom:10px;">🎉 You Won!</h3>
+      <p id="reward-text" style="font-size:18px;"></p>
+      <button onclick="window.location.href='https://yourshop.com/shirts'" style="margin-top:15px; background:#00cc99; color:#fff; padding:10px 20px; border:none; border-radius:6px; cursor:pointer;">Buy Now</button>
       <br>
-      <button onclick="document.getElementById('victory-modal').style.display='none'" style="margin-top:10px; background:none; color:#333; border:none; cursor:pointer;">Close</button>
+      <button onclick="document.getElementById('reward-modal').style.display='none'" style="margin-top:10px; background:none; color:#333; border:none; cursor:pointer;">Close</button>
     </div>
   </div>
 </section>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const container = document.getElementById('game-container');
-  const startBtn = document.getElementById('start-btn');
-  const scoreDisplay = document.getElementById('score');
-  const timeDisplay = document.getElementById('time');
-  const resultMessage = document.getElementById('result-message');
-  const modal = document.getElementById('victory-modal');
+const options = [
+  "Try Again", "5% OFF", "Try Again", "10% OFF", 
+  "Try Again", "Buy 2 Get 3rd FREE", "Try Again", "Try Again"
+];
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
+const result = document.getElementById("result");
+const spinBtn = document.getElementById("spin-btn");
+const modal = document.getElementById("reward-modal");
+const rewardText = document.getElementById("reward-text");
 
-  const icons = ['🏋️', '🏃‍♂️', '🥊', '🧘‍♂️', '🚴‍♀️', '💣'];
-  let score = 0;
-  let timeLeft = 30;
-  let gameActive = false;
-  let timer, spawnInterval;
-  const WIN_SCORE = 20;
+let angle = 0;
+let spinning = false;
 
-  startBtn.addEventListener('click', startGame);
+function drawWheel() {
+  const radius = canvas.width / 2;
+  const step = 2 * Math.PI / options.length;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  function startGame() {
-    if (gameActive) return;
+  options.forEach((option, i) => {
+    const start = angle + i * step;
+    const end = start + step;
 
-    score = 0;
-    timeLeft = 30;
-    gameActive = true;
-    scoreDisplay.textContent = score;
-    timeDisplay.textContent = `${timeLeft}s`;
-    resultMessage.textContent = '';
-    startBtn.textContent = 'PLAYING...';
-    container.innerHTML = '';
+    ctx.beginPath();
+    ctx.moveTo(radius, radius);
+    ctx.arc(radius, radius, radius, start, end);
+    ctx.fillStyle = i % 2 === 0 ? "#00ffcc" : "#009988";
+    ctx.fill();
+    ctx.fillStyle = "#000";
+    ctx.font = "13px sans-serif";
+    ctx.save();
+    ctx.translate(radius, radius);
+    ctx.rotate(start + step / 2);
+    ctx.textAlign = "right";
+    ctx.fillText(option, radius - 10, 5);
+    ctx.restore();
+  });
 
-    timer = setInterval(() => {
-      timeLeft--;
-      timeDisplay.textContent = `${timeLeft}s`;
-      if (timeLeft <= 0) endGame();
-    }, 1000);
+  // Draw pointer
+  ctx.beginPath();
+  ctx.moveTo(radius - 10, 0);
+  ctx.lineTo(radius + 10, 0);
+  ctx.lineTo(radius, 20);
+  ctx.fillStyle = "red";
+  ctx.fill();
+}
 
-    spawnInterval = setInterval(spawnIcon, 700);
-  }
+drawWheel();
 
-  function spawnIcon() {
-    if (!gameActive) return;
+spinBtn.addEventListener("click", () => {
+  if (spinning) return;
+  spinning = true;
+  const duration = 3000;
+  const spins = 4;
+  const step = (2 * Math.PI) / options.length;
+  const randIndex = Math.floor(Math.random() * options.length);
+  const targetAngle = randIndex * step;
 
-    const icon = document.createElement('div');
-    const chosen = icons[Math.floor(Math.random() * icons.length)];
-    icon.textContent = chosen;
-    icon.classList.add('icon');
-    icon.style.position = 'absolute';
-    icon.style.fontSize = '40px';
-    icon.style.cursor = 'pointer';
-    icon.style.userSelect = 'none';
-    icon.style.transition = 'transform 0.2s ease';
+  const totalRotation = spins * 2 * Math.PI + targetAngle;
+  const start = performance.now();
 
-    const size = 40;
-    const maxX = container.clientWidth - size;
-    const maxY = container.clientHeight - size;
-    icon.style.left = Math.floor(Math.random() * maxX) + 'px';
-    icon.style.top = Math.floor(Math.random() * maxY) + 'px';
+  function animate(time) {
+    const elapsed = time - start;
+    const t = Math.min(elapsed / duration, 1);
+    angle = totalRotation * easeOut(t);
+    drawWheel();
 
-    icon.addEventListener('click', () => {
-      if (!gameActive) return;
-      if (chosen === '💣') {
-        score = Math.max(0, score - 2);
-      } else {
-        score++;
-      }
-      scoreDisplay.textContent = score;
-      icon.style.transform = 'scale(1.4)';
-      setTimeout(() => icon.remove(), 100);
-    });
-
-    container.appendChild(icon);
-
-    // Auto-remove
-    setTimeout(() => {
-      if (icon.parentNode) icon.remove();
-    }, 1000);
-  }
-
-  function endGame() {
-    gameActive = false;
-    clearInterval(timer);
-    clearInterval(spawnInterval);
-    startBtn.textContent = 'PLAY AGAIN';
-    container.innerHTML = '';
-
-    if (score >= WIN_SCORE) {
-      modal.style.display = 'flex';
+    if (t < 1) {
+      requestAnimationFrame(animate);
     } else {
-      resultMessage.textContent = `Nice try! Score ${WIN_SCORE}+ for a reward.`;
+      spinning = false;
+      const resultText = options[randIndex];
+      if (resultText === "Try Again") {
+        result.textContent = "No luck this time. Try again!";
+      } else {
+        result.textContent = "";
+        rewardText.textContent = resultText;
+        modal.style.display = "flex";
+      }
     }
   }
+
+  requestAnimationFrame(animate);
 });
+
+function easeOut(t) {
+  return 1 - Math.pow(1 - t, 3);
+}
 </script>
+
 
 
 <section id="shop">
