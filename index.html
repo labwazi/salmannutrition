@@ -1209,7 +1209,7 @@
   <p>
     Power-up: <span id="powerup">None</span>
   </p>
-  <div id="gameArea" style="position:relative; margin:20px auto; background:#222; width:320px; height:140px; border-radius:8px; overflow:hidden; border:3px solid #e53935; box-shadow: 0 0 15px #e53935; cursor: crosshair;"></div>
+  <div id="gameArea" style="position:relative; margin:20px auto; background:#222; width:320px; height:140px; border-radius:8px; overflow:hidden; border:3px solid #e53935; box-shadow: 0 0 15px #e53935; cursor: crosshair; touch-action: manipulation;"></div>
 
   <button id="startBtn" style="padding:12px 30px; font-size:18px; background:#e53935; border:none; border-radius:6px; color:#fff; cursor:pointer; font-weight:bold;">
     Start Workout
@@ -1252,11 +1252,19 @@
     let targetSpeedBase = 2;
     let difficultyTimer = 0;
 
+    // Detect if mobile (simple)
+    const isMobile = window.innerWidth <= 480;
+
+    // Adjust speed base on mobile for faster movement
+    if (isMobile) targetSpeedBase = 4;
+
+    // Adjust target size for mobile
+    const targetSize = isMobile ? 50 : 38;
+
     function randRange(min, max) {
       return Math.random() * (max - min) + min;
     }
 
-    // Show badges (achievements)
     function showBadge(text) {
       const badge = document.createElement('div');
       badge.textContent = text;
@@ -1286,16 +1294,23 @@
 
       const target = document.createElement('div');
       target.style.position = 'absolute';
-      target.style.width = '38px';
-      target.style.height = '38px';
-      target.style.fontSize = '28px';
-      target.style.lineHeight = '38px';
+      target.style.width = targetSize + 'px';
+      target.style.height = targetSize + 'px';
+      target.style.fontSize = (targetSize - 12) + 'px';
+      target.style.lineHeight = targetSize + 'px';
       target.style.textAlign = 'center';
-      target.style.top = randRange(0, gameArea.clientHeight - 38) + 'px';
-      target.style.left = '-40px';
-      target.style.cursor = 'pointer';
+      target.style.top = randRange(0, gameArea.clientHeight - targetSize) + 'px';
       target.style.userSelect = 'none';
       target.style.transition = 'transform 0.2s ease';
+
+      // Randomize spawn side: 50% from left, 50% from right
+      if (Math.random() < 0.5) {
+        target.style.left = -targetSize + 'px';
+        target.direction = 1; // move right
+      } else {
+        target.style.left = (gameArea.clientWidth) + 'px';
+        target.direction = -1; // move left
+      }
 
       target.speed = randRange(slowMotionActive ? 1 : targetSpeedBase, slowMotionActive ? 2 : targetSpeedBase + 2);
       target.type = type;
@@ -1326,7 +1341,6 @@
           updateCombo();
           scoreDisplay.textContent = score;
 
-          // Rocket Shot bonus? (removes all targets)
           if (activePowerup && activePowerup.name === 'Rocket Shot') {
             let cleared = 0;
             targets.forEach(t => {
@@ -1428,8 +1442,18 @@
 
       targets.forEach(target => {
         let left = parseFloat(target.style.left);
-        left += target.speed;
-        if (left > gameArea.clientWidth) {
+        left += target.speed * target.direction;
+        if (target.direction === 1 && left > gameArea.clientWidth) {
+          if (target.type === 'normal') {
+            comboCount = 0;
+            updateCombo();
+            score = Math.max(0, score - 1);
+            scoreDisplay.textContent = score;
+            showBadge('Missed target!');
+          }
+          gameArea.removeChild(target);
+          targets = targets.filter(t => t !== target);
+        } else if (target.direction === -1 && left < -targetSize) {
           if (target.type === 'normal') {
             comboCount = 0;
             updateCombo();
@@ -1465,7 +1489,7 @@
       moveTargets();
 
       difficultyTimer++;
-      if (difficultyTimer % 30 === 0 && targetSpeedBase < 6) {
+      if (difficultyTimer % 30 === 0 && targetSpeedBase < (isMobile ? 8 : 6)) {
         targetSpeedBase += 0.3; // gradually speed up
       }
 
@@ -1491,7 +1515,7 @@
       score = 0;
       combo = 1;
       comboCount = 0;
-      targetSpeedBase = 2;
+      targetSpeedBase = isMobile ? 4 : 2;
       powerupTimer = 0;
       activePowerup = null;
       slowMotionActive = false;
@@ -1511,10 +1535,11 @@
       targets = [];
 
       gameInterval = setInterval(gameTick, 1000);
-      spawnInterval = setInterval(spawnTargets, 800);
+      spawnInterval = setInterval(spawnTargets, 700);
     };
   </script>
 </footer>
+
   
 </body>
 </html>
