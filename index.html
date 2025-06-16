@@ -511,6 +511,8 @@
   <div class="pool-header">
     <h3>🎱 Pocket Challenge</h3>
     <p>Pull the cue to shoot the ball into the pocket! Win and follow us on TikTok</p>
+    <p></p>Want more challenges, tips, and fun content?Scroll down for more</p>
+ 
   </div>
   
   <canvas id="poolCanvas" width="800" height="400"></canvas>
@@ -519,16 +521,17 @@
     <div id="powerFill"></div>
   </div>
   
-  <div class="game-controls">
-    <button id="resetBtn">Reset Ball</button>
-    <button id="instructionsBtn">How to Play</button>
-  </div>
-  
-  <div id="winMessage">
-    <h3>You Win! 🎉</h3>
-    <p>Congratulations! You've pocketed the ball!</p>
-    <p>Follow us on TikTok for more challenges</p>
-    <button id="playAgainBtn">Play Again</button>
+ <div id="winMessageModal" class="win-message-modal hidden">
+  <div class="win-message-content">
+    <h3>🎉 Congratulations, You Won!</h3>
+    <p>Follow us on TikTok for more challenges.</p>
+    
+    <div class="win-buttons">
+      <a href="https://www.tiktok.com/@salmankhannutrition" target="_blank" class="social-btn tiktok">🎥 TikTok</a>
+      <a href="https://wa.me/?text=I%20just%20won%20this%20game!" target="_blank" class="social-btn whatsapp">💬 WhatsApp</a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.tiktok.com/@salmankhannutrition" target="_blank" class="social-btn facebook">📘 Facebook</a>
+      <button id="closeWinMessage" class="social-btn close">❌ Close</button>
+    </div>
   </div>
 </div>
 
