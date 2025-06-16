@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Salman K Abdool | Fitness | Nutrition | Shop</title>
+  <title>Salman K Abdool | Fitness Pool Game</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
       --bg: #111;
@@ -25,784 +25,738 @@
       font-family: 'Montserrat', sans-serif;
       background: var(--bg);
       color: var(--text);
-    }
-    nav {
-      position: sticky;
-      top: 0;
-      background: #000;
-      z-index: 1000;
-      padding: 20px 30px;
+      overflow-x: hidden;
+      min-height: 100vh;
       display: flex;
-      justify-content: center;
-      gap: 30px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: center;
     }
-    nav a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 700;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-    nav a:hover {
-      background: var(--primary);
-      color: #000;
-    }
+    
+    /* Header styling */
     header {
       text-align: center;
-      padding: 80px 20px 40px;
+      padding: 30px 20px;
+      width: 100%;
+      background: linear-gradient(180deg, #000 0%, #111 100%);
+      border-bottom: 2px solid var(--primary);
     }
     header h1 {
-      font-size: 42px;
+      font-size: 36px;
       color: var(--primary);
+      margin-bottom: 10px;
+      text-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
     }
     header p {
       color: #ccc;
       font-size: 18px;
     }
-    .hero-img {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-    .hero-img img {
-      width: 300px;
-      border-radius: 12px;
-      border: 5px solid var(--primary);
-    }
-    section {
-      padding: 80px 30px;
-      max-width: 1400px;
-      margin: auto;
-    }
-    h2 {
-      color: var(--primary);
-      margin-bottom: 30px;
-      font-size: 32px;
-    }
-    .shop-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-    }
-    .shop-item {
+    
+    /* Game container */
+    .game-container {
+      max-width: 800px;
+      width: 95%;
+      margin: 30px auto;
+      padding: 20px;
       background: var(--card-bg);
+      border-radius: 15px;
       border: 2px solid var(--primary);
+      box-shadow: 0 0 30px rgba(0, 255, 204, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .game-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0,255,204,0.1) 0%, transparent 70%);
+      z-index: 0;
+      animation: pulse 15s infinite alternate;
+    }
+    
+    @keyframes pulse {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(25%, 15%); }
+      50% { transform: translate(0, 25%); }
+      75% { transform: translate(-15%, 0); }
+      100% { transform: translate(0, 0); }
+    }
+    
+    .game-header {
+      text-align: center;
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .game-header h2 {
+      font-size: 28px;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+    
+    .game-header p {
+      color: #aaa;
+      font-size: 16px;
+    }
+    
+    /* Pool table styling */
+    #poolGame {
+      position: relative;
+      width: 100%;
+      height: 450px;
+      background: #0a5529;
+      border-radius: 10px;
+      border: 12px solid #5c4033;
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      margin: 0 auto;
+      z-index: 2;
+    }
+    
+    #poolCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    /* Controls section */
+    .game-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 25px;
+      background: rgba(34, 34, 34, 0.7);
+      padding: 15px 20px;
+      border-radius: 10px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .power-meter {
+      flex: 1;
+      max-width: 250px;
+    }
+    
+    .power-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--primary);
+    }
+    
+    .meter-bar {
+      width: 100%;
+      height: 20px;
+      background: #333;
       border-radius: 10px;
       overflow: hidden;
+      position: relative;
+    }
+    
+    .meter-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00b894, #00ffcc);
+      border-radius: 10px;
+      transition: width 0.1s;
+    }
+    
+    .game-stats {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .stat {
       text-align: center;
-      padding: 20px;
     }
-    .shop-item img {
-      width: 100%;
-      height: 240px;
-      object-fit: cover;
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--primary);
     }
-    .shop-item h3 {
-      margin: 12px 0 6px;
+    
+    .stat-label {
+      font-size: 14px;
+      color: #aaa;
     }
-    .shop-item p {
-      color: #ccc;
-    }
-    .shop-item a {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px 20px;
+    
+    .reset-btn {
       background: var(--primary);
-      color: black;
-      border-radius: 6px;
-      text-decoration: none;
+      color: #000;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 16px;
     }
-    .shop-item a:hover {
+    
+    .reset-btn:hover {
       background: #00c896;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 200, 150, 0.4);
     }
-    .contact, .community, .tracker {
-      background: #1a1a1a;
-      border-radius: 12px;
-      padding: 40px;
-      margin-top: 50px;
+    
+    /* Win message */
+    #winMessage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.9);
+      color: #fff;
+      padding: 30px 40px;
+      border-radius: 15px;
+      font-size: 22px;
+      text-align: center;
+      display: none;
+      z-index: 10;
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 30px rgba(0, 255, 204, 0.5);
+      width: 90%;
+      max-width: 400px;
     }
+    
+    #winMessage h3 {
+      color: var(--primary);
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+    
+    #winMessage p {
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    
+    .action-btn {
+      display: inline-block;
+      background: var(--primary);
+      color: #000;
+      text-decoration: none;
+      padding: 10px 25px;
+      border-radius: 8px;
+      font-weight: bold;
+      margin: 5px;
+      transition: all 0.3s;
+    }
+    
+    .action-btn:hover {
+      background: #00c896;
+      transform: translateY(-3px);
+    }
+    
+    /* Cue styling */
+    .cue {
+      position: absolute;
+      height: 10px;
+      background: linear-gradient(to right, #d3c1a7, #f5f5dc, #d3c1a7);
+      border-radius: 5px;
+      z-index: 5;
+      pointer-events: none;
+      transform-origin: 100% 50%;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    
+    /* Footer styling */
     footer {
       background: #000;
       color: #aaa;
       text-align: center;
-      padding: 30px;
-      font-size: 16px;
-    }
-    footer a {
-      color: var(--primary);
-      margin: 0 10px;
-      text-decoration: none;
-    }
-    input, select, button {
-      display: block;
+      padding: 20px;
       width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: 1px solid #888;
+      margin-top: auto;
+      border-top: 1px solid #222;
     }
-    button {
-      background: var(--primary);
-      color: black;
-      font-weight: bold;
+    
+    footer p {
+      margin: 10px 0;
+    }
+    
+    .social-links {
+      margin: 15px 0;
+    }
+    
+    .social-links a {
+      display: inline-block;
+      color: var(--primary);
+      font-size: 24px;
+      margin: 0 15px;
+      transition: all 0.3s;
+    }
+    
+    .social-links a:hover {
+      transform: translateY(-5px);
+      text-shadow: 0 0 10px var(--primary);
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .game-controls {
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .power-meter {
+        max-width: 100%;
+        width: 100%;
+      }
+      
+      .game-stats {
+        width: 100%;
+        justify-content: space-around;
+      }
+      
+      #poolGame {
+        height: 350px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      #poolGame {
+        height: 300px;
+      }
+      
+      .game-header h2 {
+        font-size: 24px;
+      }
+      
+      .stat-value {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
 <body>
-
-<nav>
-  <a href="#shop">Shop 🛒</a>
-  <a href="#community">Community 🤝</a>
-  <a href="#tracker">Track BMI/Calories 🧮</a>
-  <a href="#contact">Contact 📞</a>
-</nav>
-
-<header>
-  <h1>Salman K Abdool</h1>
-  <p>Personal Coach | Nutritionist | Federation PLABB 🇲🇺</p>
-</header>
-
-<div class="hero-img">
-    <img src="image/sa3.jpg" alt="Salman K Abdool" class="glowing-profile">
-</div>
-
-<!-- Single Spin Wheel Section -->
-<section id="fitness-wheelie" style="background:#111; padding:40px 20px; text-align:center; color:#fff; font-family:'Segoe UI', sans-serif; border-radius:20px; max-width:500px; margin:auto;">
-  <h2 style="color:#00ffcc;">🎯 The Fitness Wheelie</h2>
-  <p style="margin-bottom:20px;">Spin once and win a reward!</p>
-
-  <canvas id="wheel" width="300" height="300" style="border-radius:50%; background:#222; margin:20px auto;"></canvas>
-  <br>
-  <button id="spin-btn" style="padding:14px 28px; font-size:16px; background:#00ffcc; border:none; border-radius:10px; color:#000; font-weight:bold; cursor:pointer;">SPIN NOW</button>
-
-  <div id="result" style="margin-top:20px; font-size:18px; color:#00ffcc;"></div>
-
-  <!-- Modal -->
-  <div id="reward-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1000; justify-content:center; align-items:center;">
-    <div style="background:white; padding:30px 20px; border-radius:12px; text-align:center; width:90%; max-width:320px;">
-      <h3 style="color:#111;">🏆 You Got:</h3>
-      <p id="reward-text" style="font-size:18px; font-weight:bold; color:#00aa88; word-wrap: break-word;"></p>
-      <button id="shop-btn" style="margin-top:15px; background:#00cc99; color:#fff; padding:10px 20px; border:none; border-radius:6px; cursor:pointer;">Go to Shop</button>
-      <br>
-      <button id="close-modal" style="margin-top:10px; background:none; color:#333; border:none; cursor:pointer;">Close</button>
-    </div>
-  </div>
-</section>
-
-<!-- Professional Pool Game Section -->
-<section id="pool-game" style="padding:40px 20px; max-width:800px; margin:0 auto;">
-  <h2 style="color:#00ffcc; text-align:center;">🎱 Pocket Challenge</h2>
-  <p style="text-align:center; margin-bottom:20px;">Pull the cue to shoot the ball into the pocket!</p>
+  <header>
+    <h1>Salman K Abdool</h1>
+    <p>Personal Coach | Nutritionist | Federation PLABB 🇲🇺</p>
+  </header>
   
-  <div style="position:relative; margin:0 auto; max-width:600px;">
-    <canvas id="poolCanvas" width="600" height="300" style="background:#0a3b16; border-radius:10px; display:block; border:12px solid #5c3b1f;"></canvas>
-    <div id="winMessage" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.9); color:#fff; padding:20px 30px; border-radius:10px; text-align:center; display:none; z-index:100; border:2px solid #00ffcc;">
-      <h3 style="color:#00ffcc; margin-bottom:10px;">You Win! 🎉</h3>
-      <p>Follow us on TikTok for more challenges!</p>
-      <button id="playAgainBtn" style="margin-top:15px; padding:8px 16px; background:#00ffcc; color:#000; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">Play Again</button>
+  <div class="game-container">
+    <div class="game-header">
+      <h2>🎱 Fitness Pool Challenge</h2>
+      <p>Pull the cue to aim and pocket the ball to win!</p>
     </div>
-    <div id="powerMeter" style="margin-top:10px; height:10px; background:#333; border-radius:5px; overflow:hidden; display:none;">
-      <div id="powerFill" style="height:100%; width:0%; background:linear-gradient(to right, #00ff88, #00ffcc); transition:width 0.1s;"></div>
-    </div>
-  </div>
-</section>
-
-<!-- Shop Section -->
-<section id="shop">
-  <h2>🛍️ Shop – Explore Our Gear</h2>
-  <div class="shop-grid">
-    <div class="shop-item">
-      <img src="image/photo1.jpg" alt="Black MMA T-Shirt">
-      <h3>Black MMA T-Shirt</h3>
-      <p>Comfort fit, breathable training shirt</p>
-      <a href="https://wa.me/23058127138?text=Hello Salman,I am interested in your product,Can i have more details on the MMA Black-T Shirt">Order on WhatsApp</a>
-    </div>
-    <div class="shop-item">
-      <img src="image/photo2.jpg" alt="Tougher Stronger T-Shirt">
-      <h3>Tougher Stronger T-Shirt</h3>
-      <p>Comfort fit, breathable training shirt</p>
-      <a href="https://wa.me/23058127138?text=Hello Salman,I am interested in your product,Can i have more details on the Stronger Tougher T Shirt">Order on WhatsApp</a>
-    </div>
-    <!-- Add more shop items as needed -->
-  </div>
-</section>
-
-<!-- Community Section -->
-<section id="community" class="community">
-  <h2>💪 Our Community</h2>
-  <p>Connect with athletes, trainers, and fans. Transformation stories, training tips, and more. Follow us on social media!</p>
-  <p>
-    <a href="https://www.facebook.com/profile.php?id=61562754817780" target="_blank">Facebook</a> |
-    <a href="https://www.tiktok.com/@yoursampleprofile" target="_blank">TikTok</a>
-  </p>
-</section>
-
-<!-- BMI Tracker Section -->
-<section id="tracker" class="tracker">
-  <h2>🧮 Calculate Your BMI & Calories</h2>
-  <input type="number" id="weight" placeholder="Weight (kg)" />
-  <input type="number" id="height" placeholder="Height (cm)" />
-  <button onclick="calcBMI()">Calculate BMI</button>
-  <p id="bmiResult"></p>
-  <br />
-  <select id="foodSelect">
-    <option value="200">White Rice (1 cup) - 200 kcal</option>
-    <option value="220">Brown Rice (1 cup) - 220 kcal</option>
-    <!-- Add more food options as needed -->
-  </select>
-  <input type="number" id="quantity" placeholder="Quantity" />
-  <button onclick="addCalories()">Add Food</button>
-  <p><strong>Total Calories: <span id="totalCalories">0</span> kcal</strong></p>
-</section>
-
-<!-- Contact Section -->
-<section id="contact" class="contact-section">
-  <div class="contact-container">
-    <h2 class="section-title">✨ Get In Touch ✨</h2>
-    <div class="contact-card">
-      <!-- Contact Info -->
-      <div class="contact-info">
-        <div class="contact-method glow-card">
-          <div class="icon-wrapper">📍</div>
-          <div class="contact-details">
-            <h3>Our Location</h3>
-            <p>Camp Yoloff, Port Louis, Mauritius</p>
-          </div>
-        </div>
-        <div class="contact-method glow-card">
-          <div class="icon-wrapper">📞</div>
-          <div class="contact-details">
-            <h3>Phone</h3>
-            <p><a href="tel:+23058127138">+230 5812 7138</a></p>
-          </div>
-        </div>
-      </div>
-      <!-- Social Media -->
-      <div class="contact-social">
-        <div class="contact-method glow-card">
-          <div class="icon-wrapper">💬</div>
-          <div class="contact-details">
-            <h3>WhatsApp</h3>
-            <p><a href="https://wa.me/23058127138" target="_blank">Message Now</a></p>
-          </div>
-        </div>
-        <div class="contact-method glow-card">
-          <div class="icon-wrapper">👍</div>
-          <div class="contact-details">
-            <h3>Facebook</h3>
-            <p><a href="https://www.facebook.com/profile.php?id=61562754817780" target="_blank">Visit Profile</a></p>
-          </div>
+    
+    <div id="poolGame">
+      <canvas id="poolCanvas"></canvas>
+      <div id="winMessage">
+        <h3>🏆 You Win!</h3>
+        <p>Congratulations! You've pocketed the ball.</p>
+        <p>Follow us on TikTok for fitness tips and challenges!</p>
+        <div>
+          <a href="https://www.tiktok.com/@salmankhannutrition" target="_blank" class="action-btn">
+            <i class="fab fa-tiktok"></i> Follow on TikTok
+          </a>
+          <button id="playAgainBtn" class="action-btn">Play Again</button>
         </div>
       </div>
     </div>
+    
+    <div class="game-controls">
+      <div class="power-meter">
+        <span class="power-label">SHOT POWER:</span>
+        <div class="meter-bar">
+          <div class="meter-fill" id="powerFill"></div>
+        </div>
+      </div>
+      
+      <div class="game-stats">
+        <div class="stat">
+          <div class="stat-value" id="shotsCount">0</div>
+          <div class="stat-label">SHOTS</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="timeCount">0s</div>
+          <div class="stat-label">TIME</div>
+        </div>
+      </div>
+      
+      <button class="reset-btn" id="resetBtn">
+        <i class="fas fa-redo"></i> RESET GAME
+      </button>
+    </div>
   </div>
-</section>
+  
+  <footer>
+    <div class="social-links">
+      <a href="https://www.facebook.com/profile.php?id=61562754817780" target="_blank"><i class="fab fa-facebook"></i></a>
+      <a href="https://www.tiktok.com/@salmankhannutrition" target="_blank"><i class="fab fa-tiktok"></i></a>
+      <a href="https://wa.me/23058127138" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    </div>
+    <p>© 2023 Salman K Abdool Fitness & Nutrition</p>
+    <p>Camp Yoloff, Port Louis, Mauritius | +230 5812 7138</p>
+  </footer>
 
-<footer>
-  <p>© 2023 Salman K Abdool. All rights reserved.</p>
-  <p>
-    <a href="#shop">Shop</a> |
-    <a href="#community">Community</a> |
-    <a href="#contact">Contact</a>
-  </p>
-</footer>
-
-<!-- Cursor Light Effect -->
-<div class="cursor-light"></div>
-
-<style>
-  /* Cursor light effect */
-  .cursor-light {
-    position: fixed;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(0,255,204,0.2) 0%, rgba(0,255,204,0) 70%);
-    pointer-events: none;
-    transform: translate(-50%, -50%);
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  body:hover .cursor-light {
-    opacity: 1;
-  }
-  
-  /* Profile image glow */
-  @keyframes intenseGlow {
-    0% { box-shadow: 0 0 0 0 rgba(0, 255, 204, 0); }
-    50% { box-shadow: 0 0 50px 20px rgba(0, 255, 204, 0.9); }
-    100% { box-shadow: 0 0 10px 5px rgba(0, 255, 204, 0.5); }
-  }
-  
-  .hero-img img {
-    animation: intenseGlow 2s ease-out;
-    animation-fill-mode: forwards;
-    position: relative;
-    z-index: 10;
-  }
-  
-  .hero-img img:hover {
-    box-shadow: 0 0 25px 10px rgba(0, 255, 204, 0.7) !important;
-    transition: box-shadow 0.3s ease;
-  }
-  
-  /* Pool game styles */
-  #poolCanvas {
-    cursor: pointer;
-    touch-action: none;
-  }
-  
-  #powerMeter {
-    height: 15px;
-    margin-top: 15px;
-  }
-  
-  #powerFill {
-    transition: width 0.05s;
-  }
-  
-  /* Contact section styles */
-  .contact-section {
-    background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
-    padding: 80px 20px;
-    position: relative;
-  }
-  
-  .contact-card {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 30px;
-    background: rgba(26, 26, 26, 0.7);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    border: 1px solid rgba(0,255,204,0.3);
-    padding: 40px;
-  }
-  
-  .glow-card {
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    margin-bottom: 25px;
-    border-radius: 12px;
-    background: rgba(34, 34, 34, 0.7);
-    border: 1px solid rgba(0,255,204,0.2);
-    transition: all 0.3s ease;
-  }
-  
-  .glow-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 20px rgba(0,255,204,0.3);
-    border-color: #00ffcc;
-  }
-  
-  .icon-wrapper {
-    width: 60px;
-    height: 60px;
-    background: rgba(0,255,204,0.1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 20px;
-    border: 1px solid #00ffcc;
-    box-shadow: 0 0 15px rgba(0,255,204,0.3);
-    font-size: 24px;
-  }
-</style>
-
-<script>
-  // Spin Wheel Logic
-  const wheel = document.getElementById("wheel");
-  const ctx = wheel.getContext("2d");
-  const spinBtn = document.getElementById("spin-btn");
-  const rewardModal = document.getElementById("reward-modal");
-  const rewardText = document.getElementById("reward-text");
-  const shopBtn = document.getElementById("shop-btn");
-  const closeModal = document.getElementById("close-modal");
-
-  const segments = [
-    { label: "5% OFF", color: "#ff6b6b" },
-    { label: "7% OFF", color: "#feca57" },
-    { label: "10% OFF", color: "#48dbfb" },
-    { label: "15% OFF", color: "#1dd1a1" },
-    { label: "Buy 2 Get 1 Free", color: "#5f27cd" },
-    { label: "Try Again", color: "#576574" }
-  ];
-
-  const radius = 150;
-  const totalSegments = segments.length;
-  let angle = 0;
-  let spinning = false;
-
-  function drawWheel() {
-    ctx.clearRect(0, 0, wheel.width, wheel.height);
-    for (let i = 0; i < totalSegments; i++) {
-      const start = angle + (i * 2 * Math.PI) / totalSegments;
-      const end = start + (2 * Math.PI) / totalSegments;
+  <script>
+    // Game elements
+    const canvas = document.getElementById('poolCanvas');
+    const ctx = canvas.getContext('2d');
+    const winMsg = document.getElementById('winMessage');
+    const playAgainBtn = document.getElementById('playAgainBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const powerFill = document.getElementById('powerFill');
+    const shotsCount = document.getElementById('shotsCount');
+    const timeCount = document.getElementById('timeCount');
+    
+    // Set canvas dimensions
+    function resizeCanvas() {
+      const container = document.getElementById('poolGame');
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+    }
+    
+    // Initial resize
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Game variables
+    const WIDTH = canvas.width;
+    const HEIGHT = canvas.height;
+    
+    // Game objects
+    let ball = { 
+      x: WIDTH * 0.25, 
+      y: HEIGHT / 2, 
+      r: 15, 
+      dx: 0, 
+      dy: 0,
+      color: '#FFFFFF'
+    };
+    
+    const pocket = { 
+      x: WIDTH - 40, 
+      y: HEIGHT / 2, 
+      r: 25,
+      color: '#000000'
+    };
+    
+    let cue = {
+      x: ball.x,
+      y: ball.y,
+      length: 150,
+      angle: 0,
+      power: 0,
+      visible: false
+    };
+    
+    // Game state
+    let gameState = {
+      isDragging: false,
+      dragStart: null,
+      shots: 0,
+      startTime: Date.now(),
+      gameOver: false
+    };
+    
+    // Draw game elements
+    function drawTable() {
+      // Table felt
+      ctx.fillStyle = '#0a5529';
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+      
+      // Table wood
+      ctx.fillStyle = '#5c4033';
+      ctx.fillRect(0, 0, WIDTH, 15);
+      ctx.fillRect(0, HEIGHT - 15, WIDTH, 15);
+      ctx.fillRect(0, 0, 15, HEIGHT);
+      ctx.fillRect(WIDTH - 15, 0, 15, HEIGHT);
+      
+      // Pocket
       ctx.beginPath();
-      ctx.fillStyle = segments[i].color;
-      ctx.moveTo(radius, radius);
-      ctx.arc(radius, radius, radius, start, end);
+      ctx.arc(pocket.x, pocket.y, pocket.r, 0, Math.PI * 2);
+      ctx.fillStyle = pocket.color;
       ctx.fill();
-      ctx.save();
-      ctx.translate(radius, radius);
-      ctx.rotate(start + Math.PI / totalSegments);
-      ctx.fillStyle = "#fff";
-      ctx.font = "14px sans-serif";
-      ctx.textAlign = "right";
-      ctx.fillText(segments[i].label, radius - 10, 10);
-      ctx.restore();
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = 3;
+      ctx.stroke();
     }
-  }
-  drawWheel();
-
-  function canSpin() {
-    const lastSpin = localStorage.getItem("lastSpinTime");
-    if (!lastSpin) return true;
-    const diff = Date.now() - parseInt(lastSpin, 10);
-    return diff > 60 * 60 * 1000; // 1 hour
-  }
-
-  function setLastSpinTime() {
-    localStorage.setItem("lastSpinTime", Date.now().toString());
-  }
-
-  function spinWheel() {
-    if (spinning) return;
-    if (!canSpin()) {
-      alert("🕒 Please wait 1 hour before your next spin!");
-      return;
+    
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+      ctx.fillStyle = ball.color;
+      ctx.fill();
+      
+      // Ball highlight
+      ctx.beginPath();
+      ctx.arc(ball.x - ball.r/3, ball.y - ball.r/3, ball.r/3, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.fill();
+      
+      // Ball number
+      ctx.fillStyle = '#000';
+      ctx.font = 'bold ' + (ball.r * 0.8) + 'px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('8', ball.x, ball.y);
     }
-
-    spinning = true;
-    spinBtn.disabled = true;
-    let rotation = 0;
-    const target = 360 * 5 + Math.floor(Math.random() * 360);
-    const duration = 3000;
-    const start = performance.now();
-
-    function animate(time) {
-      const elapsed = time - start;
-      const progress = Math.min(elapsed / duration, 1);
-      rotation = progress * target;
-      ctx.save();
-      ctx.translate(radius, radius);
-      ctx.rotate((rotation * Math.PI) / 180);
-      ctx.translate(-radius, -radius);
-      drawWheel();
-      ctx.restore();
-
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        const finalAngle = rotation % 360;
-        const index = Math.floor(totalSegments - (finalAngle / 360) * totalSegments) % totalSegments;
-        const reward = segments[index];
-
-        setLastSpinTime();
-        if (reward.label === "Try Again") {
-          alert("😢 Try again in 1 hour!");
-        } else {
-          rewardText.textContent = reward.label;
-          rewardModal.style.display = "flex";
-        }
-        spinBtn.disabled = false;
-        spinning = false;
+    
+    function drawCue() {
+      if (!cue.visible) return;
+      
+      // Calculate cue position
+      const endX = cue.x + Math.cos(cue.angle) * cue.length;
+      const endY = cue.y + Math.sin(cue.angle) * cue.length;
+      
+      // Draw cue
+      ctx.beginPath();
+      ctx.moveTo(cue.x, cue.y);
+      ctx.lineTo(endX, endY);
+      ctx.strokeStyle = '#d3c1a7';
+      ctx.lineWidth = 8;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+      
+      // Draw cue tip
+      ctx.beginPath();
+      ctx.arc(cue.x, cue.y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = '#8B4513';
+      ctx.fill();
+    }
+    
+    function drawPowerLine() {
+      if (!gameState.isDragging || !gameState.dragStart) return;
+      
+      const mousePos = gameState.dragStart;
+      
+      // Calculate direction
+      const dx = ball.x - mousePos.x;
+      const dy = ball.y - mousePos.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const maxDist = 200;
+      const power = Math.min(1, dist / maxDist);
+      
+      // Update power meter
+      powerFill.style.width = (power * 100) + '%';
+      cue.power = power;
+      
+      // Draw line
+      ctx.beginPath();
+      ctx.moveTo(ball.x, ball.y);
+      ctx.lineTo(mousePos.x, mousePos.y);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 3]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    
+    function draw() {
+      ctx.clearRect(0, 0, WIDTH, HEIGHT);
+      drawTable();
+      drawBall();
+      drawCue();
+      drawPowerLine();
+    }
+    
+    // Game physics
+    function updateBall() {
+      if (Math.abs(ball.dx) < 0.05 && Math.abs(ball.dy) < 0.05) {
+        ball.dx = 0;
+        ball.dy = 0;
+        return;
+      }
+      
+      // Move ball
+      ball.x += ball.dx;
+      ball.y += ball.dy;
+      
+      // Apply friction
+      ball.dx *= 0.97;
+      ball.dy *= 0.97;
+      
+      // Boundary collision
+      if (ball.x - ball.r < 15) {
+        ball.x = 15 + ball.r;
+        ball.dx = -ball.dx * 0.8;
+      }
+      if (ball.x + ball.r > WIDTH - 15) {
+        ball.x = WIDTH - 15 - ball.r;
+        ball.dx = -ball.dx * 0.8;
+      }
+      if (ball.y - ball.r < 15) {
+        ball.y = 15 + ball.r;
+        ball.dy = -ball.dy * 0.8;
+      }
+      if (ball.y + ball.r > HEIGHT - 15) {
+        ball.y = HEIGHT - 15 - ball.r;
+        ball.dy = -ball.dy * 0.8;
       }
     }
-    requestAnimationFrame(animate);
-  }
-
-  spinBtn.addEventListener("click", spinWheel);
-  shopBtn.addEventListener("click", () => {
-    window.location.href = "#shop";
-    rewardModal.style.display = "none";
-  });
-  closeModal.addEventListener("click", () => {
-    rewardModal.style.display = "none";
-  });
-
-  // Pool Game Logic
-  const poolCanvas = document.getElementById("poolCanvas");
-  const poolCtx = poolCanvas.getContext("2d");
-  const winMessage = document.getElementById("winMessage");
-  const playAgainBtn = document.getElementById("playAgainBtn");
-  const powerMeter = document.getElementById("powerMeter");
-  const powerFill = document.getElementById("powerFill");
-
-  const WIDTH = poolCanvas.width;
-  const HEIGHT = poolCanvas.height;
-
-  // Game objects
-  const ball = { x: 150, y: HEIGHT/2, r: 15, dx: 0, dy: 0 };
-  const pocket = { x: WIDTH - 30, y: HEIGHT/2, r: 25 };
-  const cue = { x: 0, y: 0, power: 0, angle: 0, pulling: false };
-  
-  let gameOver = false;
-  let powerIncreasing = true;
-  let power = 0;
-
-  // Draw game elements
-  function drawTable() {
-    // Table
-    poolCtx.fillStyle = '#0a3b16';
-    poolCtx.fillRect(0, 0, WIDTH, HEIGHT);
     
-    // Wood border
-    poolCtx.strokeStyle = '#5c3b1f';
-    poolCtx.lineWidth = 10;
-    poolCtx.strokeRect(0, 0, WIDTH, HEIGHT);
-    
-    // Pocket
-    poolCtx.beginPath();
-    poolCtx.arc(pocket.x, pocket.y, pocket.r, 0, Math.PI * 2);
-    poolCtx.fillStyle = '#111';
-    poolCtx.fill();
-    poolCtx.strokeStyle = '#666';
-    poolCtx.lineWidth = 2;
-    poolCtx.stroke();
-  }
-
-  function drawBall() {
-    poolCtx.beginPath();
-    poolCtx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
-    
-    // Ball gradient
-    const gradient = poolCtx.createRadialGradient(
-      ball.x - 5, ball.y - 5, 5,
-      ball.x, ball.y, ball.r
-    );
-    gradient.addColorStop(0, '#000');
-    gradient.addColorStop(1, '#222');
-    poolCtx.fillStyle = gradient;
-    
-    poolCtx.shadowColor = 'rgba(0,0,0,0.5)';
-    poolCtx.shadowBlur = 10;
-    poolCtx.fill();
-    poolCtx.shadowBlur = 0;
-    
-    // Ball number
-    poolCtx.fillStyle = '#fff';
-    poolCtx.font = 'bold 16px Arial';
-    poolCtx.textAlign = 'center';
-    poolCtx.textBaseline = 'middle';
-    poolCtx.fillText('8', ball.x, ball.y);
-  }
-
-  function drawCue() {
-    if (!cue.pulling) return;
-    
-    const cueLength = 150;
-    const endX = ball.x + Math.cos(cue.angle) * (ball.r + cueLength * (1 - cue.power));
-    const endY = ball.y + Math.sin(cue.angle) * (ball.r + cueLength * (1 - cue.power));
-    
-    poolCtx.beginPath();
-    poolCtx.moveTo(ball.x + Math.cos(cue.angle) * ball.r, ball.y + Math.sin(cue.angle) * ball.r);
-    poolCtx.lineTo(endX, endY);
-    poolCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-    poolCtx.lineWidth = 5;
-    poolCtx.stroke();
-    
-    // Cue tip
-    poolCtx.beginPath();
-    poolCtx.arc(endX, endY, 3, 0, Math.PI * 2);
-    poolCtx.fillStyle = '#fff';
-    poolCtx.fill();
-  }
-
-  function updateBall() {
-    ball.x += ball.dx;
-    ball.y += ball.dy;
-    
-    // Friction
-    ball.dx *= 0.98;
-    ball.dy *= 0.98;
-    
-    // Stop when very slow
-    if (Math.abs(ball.dx) < 0.1) ball.dx = 0;
-    if (Math.abs(ball.dy) < 0.1) ball.dy = 0;
-    
-    // Wall collision
-    if (ball.x - ball.r < 0) {
-      ball.x = ball.r;
-      ball.dx *= -0.8;
+    function checkPocket() {
+      const dx = ball.x - pocket.x;
+      const dy = ball.y - pocket.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      return distance < pocket.r - ball.r;
     }
-    if (ball.x + ball.r > WIDTH) {
-      ball.x = WIDTH - ball.r;
-      ball.dx *= -0.8;
+    
+    function checkWin() {
+      if (checkPocket() && !gameState.gameOver) {
+        gameState.gameOver = true;
+        winMsg.style.display = 'block';
+      }
     }
-    if (ball.y - ball.r < 0) {
-      ball.y = ball.r;
-      ball.dy *= -0.8;
+    
+    function shootBall(power, angle) {
+      const force = power * 15;
+      ball.dx = Math.cos(angle) * force;
+      ball.dy = Math.sin(angle) * force;
+      gameState.shots++;
+      shotsCount.textContent = gameState.shots;
+      cue.visible = false;
     }
-    if (ball.y + ball.r > HEIGHT) {
-      ball.y = HEIGHT - ball.r;
-      ball.dy *= -0.8;
+    
+    function resetGame() {
+      ball.x = WIDTH * 0.25;
+      ball.y = HEIGHT / 2;
+      ball.dx = 0;
+      ball.dy = 0;
+      
+      cue.visible = false;
+      gameState.isDragging = false;
+      gameState.dragStart = null;
+      gameState.shots = 0;
+      gameState.startTime = Date.now();
+      gameState.gameOver = false;
+      
+      shotsCount.textContent = '0';
+      powerFill.style.width = '0%';
+      
+      winMsg.style.display = 'none';
     }
-  }
-
-  function checkPocket() {
-    const dist = Math.sqrt((ball.x - pocket.x) ** 2 + (ball.y - pocket.y) ** 2);
-    return dist < pocket.r - ball.r;
-  }
-
-  function checkWin() {
-    if (checkPocket() && !gameOver) {
-      gameOver = true;
-      winMessage.style.display = 'block';
+    
+    // Event handlers
+    function getMousePos(e) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      };
     }
-  }
-
-  function draw() {
-    drawTable();
-    drawBall();
-    drawCue();
-  }
-
-  function update() {
-    if (!gameOver) {
+    
+    function getTouchPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: e.touches[0].clientX - rect.left,
+        y: e.touches[0].clientY - rect.top
+      };
+    }
+    
+    function handleDown(e) {
+      if (gameState.gameOver) return;
+      
+      let pos;
+      if (e.type === 'mousedown') {
+        pos = getMousePos(e);
+      } else if (e.type === 'touchstart') {
+        pos = getTouchPos(e);
+      }
+      
+      // Check if click is on the ball
+      const dx = pos.x - ball.x;
+      const dy = pos.y - ball.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      if (distance <= ball.r && ball.dx === 0 && ball.dy === 0) {
+        gameState.isDragging = true;
+        gameState.dragStart = pos;
+        cue.visible = true;
+        cue.x = ball.x;
+        cue.y = ball.y;
+      }
+    }
+    
+    function handleMove(e) {
+      if (!gameState.isDragging || !gameState.dragStart) return;
+      
+      let pos;
+      if (e.type === 'mousemove') {
+        pos = getMousePos(e);
+      } else if (e.type === 'touchmove') {
+        pos = getTouchPos(e);
+      }
+      
+      gameState.dragStart = pos;
+      
+      // Calculate cue angle
+      const dx = ball.x - pos.x;
+      const dy = ball.y - pos.y;
+      cue.angle = Math.atan2(dy, dx);
+    }
+    
+    function handleUp() {
+      if (!gameState.isDragging || !gameState.dragStart) return;
+      
+      // Calculate shot power and angle
+      const dx = ball.x - gameState.dragStart.x;
+      const dy = ball.y - gameState.dragStart.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const maxDist = 200;
+      const power = Math.min(1, dist / maxDist);
+      const angle = Math.atan2(dy, dx);
+      
+      // Shoot the ball
+      shootBall(power, angle);
+      
+      // Reset
+      gameState.isDragging = false;
+      gameState.dragStart = null;
+      powerFill.style.width = '0%';
+    }
+    
+    // Update game time
+    function updateTime() {
+      if (!gameState.gameOver) {
+        const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+        timeCount.textContent = elapsed + 's';
+      }
+    }
+    
+    // Game loop
+    function gameLoop() {
       updateBall();
       checkWin();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+    
+    // Initialize game
+    function init() {
+      resetGame();
       
-      // Auto-power meter when not moving
-      if (ball.dx === 0 && ball.dy === 0 && !cue.pulling) {
-        if (powerIncreasing) {
-          power += 0.01;
-          if (power >= 1) powerIncreasing = false;
-        } else {
-          power -= 0.01;
-          if (power <= 0) powerIncreasing = true;
-        }
-        powerFill.style.width = `${power * 100}%`;
-      }
+      // Event listeners
+      canvas.addEventListener('mousedown', handleDown);
+      canvas.addEventListener('mousemove', handleMove);
+      canvas.addEventListener('mouseup', handleUp);
+      canvas.addEventListener('mouseleave', handleUp);
+      
+      canvas.addEventListener('touchstart', handleDown);
+      canvas.addEventListener('touchmove', handleMove);
+      canvas.addEventListener('touchend', handleUp);
+      
+      playAgainBtn.addEventListener('click', resetGame);
+      resetBtn.addEventListener('click', resetGame);
+      
+      // Start game loop
+      gameLoop();
+      
+      // Update timer
+      setInterval(updateTime, 1000);
     }
-    draw();
-    requestAnimationFrame(update);
-  }
-
-  function getPos(e) {
-    const rect = poolCanvas.getBoundingClientRect();
-    return {
-      x: (e.clientX || e.touches[0].clientX) - rect.left,
-      y: (e.clientY || e.touches[0].clientY) - rect.top
-    };
-  }
-
-  poolCanvas.addEventListener('mousedown', startPull);
-  poolCanvas.addEventListener('touchstart', startPull);
-  
-  function startPull(e) {
-    if (gameOver || ball.dx !== 0 || ball.dy !== 0) return;
-    e.preventDefault();
     
-    const pos = getPos(e);
-    cue.angle = Math.atan2(pos.y - ball.y, pos.x - ball.x);
-    cue.pulling = true;
-    powerMeter.style.display = 'block';
-  }
-
-  poolCanvas.addEventListener('mousemove', updatePull);
-  poolCanvas.addEventListener('touchmove', updatePull);
-  
-  function updatePull(e) {
-    if (!cue.pulling) return;
-    e.preventDefault();
-    
-    const pos = getPos(e);
-    const dist = Math.sqrt((pos.x - ball.x) ** 2 + (pos.y - ball.y) ** 2);
-    cue.power = Math.min(1, dist / 200);
-    powerFill.style.width = `${cue.power * 100}%`;
-  }
-
-  poolCanvas.addEventListener('mouseup', releaseCue);
-  poolCanvas.addEventListener('touchend', releaseCue);
-  poolCanvas.addEventListener('mouseleave', releaseCue);
-  
-  function releaseCue(e) {
-    if (!cue.pulling) return;
-    e.preventDefault();
-    
-    const power = cue.power * 20;
-    ball.dx = -Math.cos(cue.angle) * power;
-    ball.dy = -Math.sin(cue.angle) * power;
-    
-    cue.pulling = false;
-    powerMeter.style.display = 'none';
-  }
-
-  playAgainBtn.addEventListener('click', () => {
-    ball.x = 150;
-    ball.y = HEIGHT/2;
-    ball.dx = 0;
-    ball.dy = 0;
-    gameOver = false;
-    winMessage.style.display = 'none';
-  });
-
-  // BMI Calculator
-  function calcBMI() {
-    const w = parseFloat(document.getElementById('weight').value);
-    const h = parseFloat(document.getElementById('height').value) / 100;
-    const result = document.getElementById('bmiResult');
-    if (w > 0 && h > 0) {
-      const bmi = w / (h * h);
-      let category = '';
-      if (bmi < 18.5) category = 'Underweight';
-      else if (bmi < 25) category = 'Normal';
-      else if (bmi < 30) category = 'Overweight';
-      else category = 'Obese';
-      result.textContent = `BMI: ${bmi.toFixed(2)} (${category})`;
-    } else {
-      result.textContent = 'Enter valid values.';
-    }
-  }
-
-  // Calories Tracker
-  let totalCalories = 0;
-  function addCalories() {
-    const foodSelect = document.getElementById('foodSelect');
-    const quantity = parseFloat(document.getElementById('quantity').value);
-    const calPerUnit = parseFloat(foodSelect.value);
-    if (!calPerUnit || isNaN(quantity)) return;
-    const cal = calPerUnit * quantity;
-    totalCalories += cal;
-    document.getElementById('totalCalories').textContent = totalCalories.toFixed(2);
-    document.getElementById('quantity').value = '';
-  }
-
-  // Cursor light effect
-  document.addEventListener('mousemove', (e) => {
-    const light = document.querySelector('.cursor-light');
-    light.style.left = `${e.clientX}px`;
-    light.style.top = `${e.clientY}px`;
-  });
-  
-  document.addEventListener('touchmove', (e) => {
-    const light = document.querySelector('.cursor-light');
-    light.style.left = `${e.touches[0].clientX}px`;
-    light.style.top = `${e.touches[0].clientY}px`;
-  });
-
-  // Profile image glow interaction
-  document.querySelector('.hero-img img').addEventListener('click', function() {
-    this.style.animation = 'none';
-    void this.offsetWidth;
-    this.style.animation = 'intenseGlow 2s ease-out';
-  });
-  
-  document.querySelector('.hero-img img').addEventListener('touchstart', function() {
-    this.style.animation = 'none';
-    void this.offsetWidth;
-    this.style.animation = 'intenseGlow 2s ease-out';
-  });
-
-  // Initialize game
-  update();
-</script>
+    // Start the game when page loads
+    window.addEventListener('load', init);
+  </script>
 </body>
 </html>
