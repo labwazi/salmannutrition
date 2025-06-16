@@ -300,194 +300,160 @@
   </div>
 </section>
 
+<section id="fitness-wheelie" style="text-align:center; padding:40px; background:#111; color:#fff; border-radius:12px;">
+  <h2 style="color:#00ffcc;">🎡 Spin & Win: Fitness Wheelie</h2>
+  <p>Get a chance to win exclusive discounts! 1 spin every hour.</p>
+  <canvas id="wheel" width="300" height="300" style="margin:30px auto; display:block;"></canvas>
+  <button id="spinBtn" style="background:#00ffcc; color:#000; border:none; padding:12px 24px; font-size:16px; font-weight:bold; border-radius:6px; cursor:pointer;">SPIN NOW</button>
+</section>
+<section id="fitness-wheelie" style="text-align:center; padding:40px; background:#111; color:#fff; border-radius:12px;">
+  <h2 style="color:#00ffcc;">🎡 Spin & Win: Fitness Wheelie</h2>
+  <p>Get a chance to win exclusive discounts! 1 spin every hour.</p>
+  <canvas id="wheel" width="300" height="300" style="margin:30px auto; display:block;"></canvas>
+  <button id="spinBtn" style="background:#00ffcc; color:#000; border:none; padding:12px 24px; font-size:16px; font-weight:bold; border-radius:6px; cursor:pointer;">SPIN NOW</button>
+</section>
+
 <script>
-(() => {
-  const options = [
-    "5% OFF",
-    "7% OFF",
-    "10% OFF",
-    "15% OFF",
-    "Buy 2 Get 1 FREE",
-    "Try Again"
-  ];
-  const maxSpins = 1;  // only 1 spin allowed
-  const spinKey = "fitnessWheelieSpins";
-  const promoCodeKey = "fitnessWheeliePromoCode";
-  const promoTimestampKey = "fitnessWheeliePromoTimestamp";
-  const promoValidityMs = 2 * 60 * 60 * 1000; // 2 hours
+const wheel = document.getElementById("wheel");
+const ctx = wheel.getContext("2d");
+const spinBtn = document.getElementById("spinBtn");
 
-  const canvas = document.getElementById("wheel");
-  const ctx = canvas.getContext("2d");
-  const result = document.getElementById("result");
-  const spinBtn = document.getElementById("spin-btn");
-  const modal = document.getElementById("reward-modal");
-  const rewardText = document.getElementById("reward-text");
-  const closeModalBtn = document.getElementById("close-modal");
-  const shopBtn = document.getElementById("shop-btn");
+const segments = [
+  { label: "5% OFF", color: "#ff6b6b" },
+  { label: "7% OFF", color: "#feca57" },
+  { label: "10% OFF", color: "#48dbfb" },
+  { label: "15% OFF", color: "#1dd1a1" },
+  { label: "Buy 2 Get 1 Free", color: "#5f27cd" },
+  { label: "Try Again", color: "#576574" }
+];
 
-  const radius = canvas.width / 2;
-  const step = 2 * Math.PI / options.length;
+const radius = 150;
+const totalSegments = segments.length;
+let angle = 0;
 
-  let angle = 0;
-  let spinning = false;
-
-  function drawWheel() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    options.forEach((option, i) => {
-      const start = angle + i * step;
-      const end = start + step;
-      ctx.beginPath();
-      ctx.moveTo(radius, radius);
-      ctx.arc(radius, radius, radius, start, end);
-      ctx.fillStyle = i % 2 === 0 ? "#00ffcc" : "#009988";
-      ctx.fill();
-
-      ctx.fillStyle = "#000";
-      ctx.font = "14px sans-serif";
-      ctx.save();
-      ctx.translate(radius, radius);
-      ctx.rotate(start + step / 2);
-      ctx.textAlign = "right";
-      ctx.fillText(option, radius - 10, 5);
-      ctx.restore();
-    });
-
-    // Draw pointer (triangle at top)
+function drawWheel() {
+  for (let i = 0; i < totalSegments; i++) {
+    const start = angle + (i * 2 * Math.PI) / totalSegments;
+    const end = start + (2 * Math.PI) / totalSegments;
     ctx.beginPath();
-    ctx.moveTo(radius - 10, 10);
-    ctx.lineTo(radius + 10, 10);
-    ctx.lineTo(radius, 30);
-    ctx.fillStyle = "red";
+    ctx.fillStyle = segments[i].color;
+    ctx.moveTo(radius, radius);
+    ctx.arc(radius, radius, radius, start, end);
     ctx.fill();
+    ctx.save();
+    ctx.translate(radius, radius);
+    ctx.rotate(start + Math.PI / totalSegments);
+    ctx.fillStyle = "#fff";
+    ctx.font = "14px sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText(segments[i].label, radius - 10, 10);
+    ctx.restore();
   }
+}
+drawWheel();
 
-  function easeOut(t) {
-    return 1 - Math.pow(1 - t, 3);
-  }
+function canSpin() {
+  const lastSpin = localStorage.getItem("lastSpinTime");
+  if (!lastSpin) return true;
+  const diff = Date.now() - parseInt(lastSpin, 10);
+  return diff > 60 * 60 * 1000; // 1 hour
+}
 
-  function getSpinCount() {
-    return parseInt(localStorage.getItem(spinKey) || "0", 10);
-  }
+function setLastSpinTime() {
+  localStorage.setItem("lastSpinTime", Date.now().toString());
+}
 
-  function incrementSpinCount() {
-    const count = getSpinCount();
-    localStorage.setItem(spinKey, count + 1);
-  }
+function createPromoCode(label) {
+  const prefix = label.replace(/\s/g, '').replace(/[^A-Z0-9]/gi, '').toUpperCase();
+  return prefix + Math.floor(1000 + Math.random() * 9000);
+}
 
-  function generateCode(prefix = "FIT") {
-    const random = Math.random().toString(36).substring(2, 8).toUpperCase();
-    return `${prefix}-${random}`;
-  }
+function showRewardPopup(rewardLabel) {
+  const promoCode = createPromoCode(rewardLabel);
+  const expiresAt = Date.now() + 60 * 60 * 1000;
+  localStorage.setItem("fitnessPromoCode", promoCode);
+  localStorage.setItem("fitnessPromoExpires", expiresAt.toString());
 
-  function savePromoCode(code) {
-    localStorage.setItem(promoCodeKey, code);
-    localStorage.setItem(promoTimestampKey, Date.now());
-  }
+  const popup = document.createElement("div");
+  popup.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:9999;";
+  popup.innerHTML = `
+    <div style="background:#fff; color:#000; padding:30px; border-radius:12px; text-align:center; max-width:90%; width:300px;">
+      <h3>🎉 You Won: ${rewardLabel}</h3>
+      <p style="font-size:18px;">Your Promo Code:</p>
+      <div style="font-size:24px; font-weight:bold; margin-bottom:10px;">${promoCode}</div>
+      <div id="countdown" style="color:#e74c3c; font-size:14px; margin-bottom:10px;"></div>
+      <a href="https://labwazi.github.io/salmannutrition/#shop" target="_blank" style="display:inline-block; margin:10px 0; padding:10px 16px; background:#00b894; color:#fff; text-decoration:none; border-radius:6px;">🛒 Buy Now</a>
+      <a id="shareBtn" href="#" target="_blank" style="display:inline-block; padding:10px 16px; background:#25D366; color:#fff; text-decoration:none; border-radius:6px; margin-top:10px;">📤 Share on WhatsApp</a>
+      <div><button onclick="this.closest('div').parentNode.remove()" style="margin-top:15px; background:#ccc; border:none; padding:6px 12px; border-radius:4px;">Close</button></div>
+    </div>
+  `;
+  document.body.appendChild(popup);
 
-  function checkPromoValidity() {
-    const code = localStorage.getItem(promoCodeKey);
-    const timestamp = parseInt(localStorage.getItem(promoTimestampKey), 10);
-    if (!code || !timestamp) return null;
-    if (Date.now() - timestamp > promoValidityMs) {
-      localStorage.removeItem(promoCodeKey);
-      localStorage.removeItem(promoTimestampKey);
-      return null;
-    }
-    return code;
-  }
-
-  function showReward(prize, code = "") {
-    if(prize === "Try Again") {
-      rewardText.textContent = "😕 Try again next time!";
+  const countdown = popup.querySelector("#countdown");
+  const interval = setInterval(() => {
+    const remaining = expiresAt - Date.now();
+    if (remaining <= 0) {
+      countdown.textContent = "Code expired!";
+      clearInterval(interval);
     } else {
-      rewardText.innerHTML = `
-        <strong>${prize}</strong><br>
-        Your promo code: <code>${code}</code><br>
-        <small>(Valid for 2 hours)</small>
-      `;
+      const mins = Math.floor(remaining / 60000);
+      const secs = Math.floor((remaining % 60000) / 1000);
+      countdown.textContent = `⏳ Expires in ${mins}m ${secs}s`;
     }
-    modal.style.display = "flex";
+  }, 1000);
+
+  const shareBtn = popup.querySelector("#shareBtn");
+  const msg = `🎉 I just won a ${rewardLabel} from Salman Nutrition!\nUse code ${promoCode} within 1 hour: https://labwazi.github.io/salmannutrition/#shop 🛒\nContact: https://wa.me/23058127138\nTry your luck too! 💪`;
+  shareBtn.href = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+}
+
+function spinWheel() {
+  if (!canSpin()) {
+    alert("🕒 Please wait 1 hour before your next spin!");
+    return;
   }
 
-  function spinWheel() {
-    if (spinning) return;
+  spinBtn.disabled = true;
+  let rotation = 0;
+  const target = 360 * 5 + Math.floor(Math.random() * 360);
+  const duration = 3000;
+  const start = performance.now();
 
-    const spinsDone = getSpinCount();
-    if (spinsDone >= maxSpins) {
-      result.textContent = "⛔ Sorry, you have used your spin.";
-      return;
-    }
+  function animate(time) {
+    const elapsed = time - start;
+    const progress = Math.min(elapsed / duration, 1);
+    rotation = progress * target;
+    ctx.clearRect(0, 0, wheel.width, wheel.height);
+    ctx.save();
+    ctx.translate(radius, radius);
+    ctx.rotate((rotation * Math.PI) / 180);
+    ctx.translate(-radius, -radius);
+    drawWheel();
+    ctx.restore();
 
-    spinning = true;
-    spinBtn.disabled = true;
-    result.textContent = "";
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      const finalAngle = rotation % 360;
+      const index = Math.floor(totalSegments - (finalAngle / 360) * totalSegments) % totalSegments;
+      const reward = segments[index];
 
-    incrementSpinCount();
-
-    const totalSpins = 3 + Math.floor(Math.random() * 3); // 3 to 5 rotations
-    const prizeIndex = Math.floor(Math.random() * options.length);
-    const finalAngle = (2 * Math.PI * totalSpins) + (prizeIndex * step) + step / 2;
-
-    console.log("DEBUG: Prize index:", prizeIndex, "Prize:", options[prizeIndex]);
-
-    const duration = 4000;
-    const startTime = performance.now();
-
-    function animate(now) {
-      let elapsed = now - startTime;
-      if (elapsed > duration) elapsed = duration;
-      let progress = easeOut(elapsed / duration);
-
-      angle = finalAngle * progress;
-      drawWheel();
-
-      if (elapsed < duration) {
-        requestAnimationFrame(animate);
+      setLastSpinTime();
+      if (reward.label === "Try Again") {
+        alert("😢 Try again in 1 hour!");
       } else {
-        spinning = false;
-        spinBtn.disabled = false;
-        const prize = options[prizeIndex];
-
-        if (prize === "Try Again") {
-          showReward(prize);
-        } else {
-          // Match promo prefix exactly to prize
-          let prefix = "FIT";
-          if (prize.includes("Buy")) prefix = "B2G1";
-          else if (prize.includes("5%")) prefix = "FIT5";
-          else if (prize.includes("7%")) prefix = "FIT7";
-          else if (prize.includes("10%")) prefix = "FIT10";
-          else if (prize.includes("15%")) prefix = "FIT15";
-
-          const code = generateCode(prefix);
-          savePromoCode(code);
-          showReward(prize, code);
-        }
+        showRewardPopup(reward.label);
       }
+      spinBtn.disabled = false;
     }
-    requestAnimationFrame(animate);
   }
+  requestAnimationFrame(animate);
+}
 
-  // Restore promo if still valid
-  const existingCode = checkPromoValidity();
-  if (existingCode) {
-    // You can customize this message or prize recall if you store prize somewhere else
-    showReward("Your Promo Code", existingCode);
-  }
-
-  drawWheel();
-
-  spinBtn.addEventListener("click", spinWheel);
-
-  closeModalBtn.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
-
-  shopBtn.addEventListener("click", () => {
-    window.location.href = "https://labwazi.github.io/salmannutrition/#shop";
-  });
-})();
+spinBtn.addEventListener("click", spinWheel);
 </script>
+
+
 
 
 
