@@ -428,6 +428,8 @@
     const prizeIndex = Math.floor(Math.random() * options.length);
     const finalAngle = (2 * Math.PI * totalSpins) + (prizeIndex * step) + step / 2;
 
+    console.log("DEBUG: Prize index:", prizeIndex, "Prize:", options[prizeIndex]);
+
     const duration = 4000;
     const startTime = performance.now();
 
@@ -486,6 +488,7 @@
   });
 })();
 </script>
+
 
 
 
