@@ -280,7 +280,7 @@
 </style>
 <section id="fitness-wheelie" style="background:#111; padding:40px 20px; text-align:center; color:#fff; font-family:'Segoe UI', sans-serif; border-radius:20px; max-width:500px; margin:auto;">
   <h2 style="color:#00ffcc;">🎯 The Fitness Wheelie</h2>
-  <p style="margin-bottom:20px;">Spin up to <strong>2 times</strong> and win a reward!</p>
+  <p style="margin-bottom:20px;">Spin once and win a reward!</p>
 
   <canvas id="wheel" width="300" height="300" style="border-radius:50%; background:#222; margin:20px auto;"></canvas>
   <br>
@@ -310,7 +310,7 @@
     "Buy 2 Get 1 FREE",
     "Try Again"
   ];
-  const maxSpins = 2;
+  const maxSpins = 1;  // only 1 spin allowed
   const spinKey = "fitnessWheelieSpins";
   const promoCodeKey = "fitnessWheeliePromoCode";
   const promoTimestampKey = "fitnessWheeliePromoTimestamp";
@@ -414,7 +414,7 @@
 
     const spinsDone = getSpinCount();
     if (spinsDone >= maxSpins) {
-      result.textContent = "⛔ Sorry, you have used all your spins.";
+      result.textContent = "⛔ Sorry, you have used your spin.";
       return;
     }
 
@@ -449,8 +449,14 @@
         if (prize === "Try Again") {
           showReward(prize);
         } else {
-          // generate promo code
-          const prefix = prize.includes("Buy") ? "B2G1" : "FIT";
+          // Match promo prefix exactly to prize
+          let prefix = "FIT";
+          if (prize.includes("Buy")) prefix = "B2G1";
+          else if (prize.includes("5%")) prefix = "FIT5";
+          else if (prize.includes("7%")) prefix = "FIT7";
+          else if (prize.includes("10%")) prefix = "FIT10";
+          else if (prize.includes("15%")) prefix = "FIT15";
+
           const code = generateCode(prefix);
           savePromoCode(code);
           showReward(prize, code);
@@ -463,9 +469,8 @@
   // Restore promo if still valid
   const existingCode = checkPromoValidity();
   if (existingCode) {
-    // Show modal with existing promo
-    let prizeGuess = "Your Promo Code"; // no prize stored, but we can say this
-    showReward(prizeGuess, existingCode);
+    // You can customize this message or prize recall if you store prize somewhere else
+    showReward("Your Promo Code", existingCode);
   }
 
   drawWheel();
@@ -479,16 +484,9 @@
   shopBtn.addEventListener("click", () => {
     window.location.href = "https://labwazi.github.io/salmannutrition/#shop";
   });
-
-  // Optional: reset spins if URL contains ?reset=true (for dev/testing)
-  if (window.location.search.includes("reset=true")) {
-    localStorage.removeItem(spinKey);
-    localStorage.removeItem(promoCodeKey);
-    localStorage.removeItem(promoTimestampKey);
-    result.textContent = "✅ Spins & promo reset! Reload page to try again.";
-  }
 })();
 </script>
+
 
 
 
