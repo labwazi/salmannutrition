@@ -1202,343 +1202,298 @@
   update();
 </script>
 <footer style="background:#111; color:#eee; padding:20px; font-family:sans-serif; text-align:center; user-select:none; max-width:360px; margin:auto; position: relative;">
-  <h2 style="margin-bottom:10px; color:#e53935;">🏋️ Protein Target Practice 🥤</h2>
-  <p>
-    Time left: <span id="timer">30</span>s | Score: <span id="score">0</span> | Combo: <span id="combo">x1</span>
-  </p>
-  <p>
-    Power-up: <span id="powerup">None</span>
-  </p>
-  <div id="gameArea" style="position:relative; margin:20px auto; background:#222; width:320px; height:140px; border-radius:8px; overflow:hidden; border:3px solid #e53935; box-shadow: 0 0 15px #e53935; cursor: crosshair; touch-action: manipulation;"></div>
 
-  <button id="startBtn" style="padding:12px 30px; font-size:18px; background:#e53935; border:none; border-radius:6px; color:#fff; cursor:pointer; font-weight:bold;">
-    Start Workout
+  <h2 style="margin-bottom:10px; color:#e53935;">🔥 Fitness Tap Challenge - Hard Mode 🔥</h2>
+
+  <p>Time left: <span id="timer">30</span>s | Score: <span id="score">0</span> | Combo: <span id="combo">x1</span></p>
+  <p>Power-up: <span id="powerup">None</span></p>
+
+  <div id="gameArea" 
+       style="position:relative; margin:20px auto; background:#222; width:320px; height:180px; border-radius:10px; overflow:hidden; border:3px solid #e53935; box-shadow: 0 0 15px #e53935; cursor:pointer; touch-action: manipulation;">
+  </div>
+
+  <button id="startBtn" 
+          style="padding:12px 30px; font-size:18px; background:#e53935; border:none; border-radius:8px; color:#fff; cursor:pointer; font-weight:bold;">
+    Start Hard Workout
   </button>
 
   <div id="badgeContainer" style="position:absolute; top:10px; left:50%; transform: translateX(-50%); pointer-events:none;"></div>
 
-  <script>
-    const gameArea = document.getElementById('gameArea');
-    const timerDisplay = document.getElementById('timer');
-    const scoreDisplay = document.getElementById('score');
-    const comboDisplay = document.getElementById('combo');
-    const powerupDisplay = document.getElementById('powerup');
-    const startBtn = document.getElementById('startBtn');
-    const badgeContainer = document.getElementById('badgeContainer');
+<script>
+(() => {
+  const gameArea = document.getElementById('gameArea');
+  const timerDisplay = document.getElementById('timer');
+  const scoreDisplay = document.getElementById('score');
+  const comboDisplay = document.getElementById('combo');
+  const powerupDisplay = document.getElementById('powerup');
+  const startBtn = document.getElementById('startBtn');
+  const badgeContainer = document.getElementById('badgeContainer');
 
-    const targetEmojis = ['🥤', '🏋️‍♂️', '🥊', '💪']; // normal targets
-    const powerups = [
-      {emoji: '⭐', name: 'Double Points', duration: 15},
-      {emoji: '🐢', name: 'Slow Motion', duration: 10},
-      {emoji: '🔥', name: 'Bonus Target', duration: 0},
-      {emoji: '🛡️', name: 'Shield', duration: 20},
-      {emoji: '🚀', name: 'Rocket Shot', duration: 0},
-      {emoji: '🎯', name: 'Precision Aim', duration: 15},
-    ];
-    const hazards = [
-      {emoji: '💣', name: 'Bomb'},
-      {emoji: '⚡', name: 'Shock'},
-      {emoji: '🕷️', name: 'Sticky Trap'}
-    ];
+  const targetEmojis = ['🥤', '🏋️‍♂️', '🥊', '💪'];
+  const powerupEmojis = ['⭐', '⏳']; // double points, freeze time
+  const hazardEmojis = ['💣', '⚡']; // bomb, shock
+  const decoyEmojis = ['👻', '❌']; // decoys to avoid
 
-    let gameInterval, spawnInterval, timeLeft, score, combo, comboCount;
-    let targets = [];
-    let activePowerup = null;
-    let powerupTimer = 0;
-    let slowMotionActive = false;
-    let shieldActive = false;
-    let freezeMovementUntil = 0;
-    let precisionAimActive = false;
-    let targetSpeedBase = 2;
-    let difficultyTimer = 0;
+  let timeLeft = 30;
+  let score = 0;
+  let combo = 1;
+  let comboCount = 0;
+  let powerupActive = null;
+  let powerupTimer = 0;
+  let comboTimeout = null;
+  let gameInterval;
+  let targets = [];
+  let freezeTime = false;
 
-    // Detect if mobile (simple)
-    const isMobile = window.innerWidth <= 480;
+  const maxTargets = 6;
+  const gameWidth = gameArea.clientWidth;
+  const gameHeight = gameArea.clientHeight;
 
-    // Adjust speed base on mobile for faster movement
-    if (isMobile) targetSpeedBase = 4;
+  // Base sizes and shrink speed variables for difficulty scaling
+  const baseMaxSize = 55;
+  const baseMinSize = 15;
+  let shrinkSpeedBase = 0.8; // starting shrink speed
+  let spawnIntervalTime = 900; // in ms
 
-    // Adjust target size for mobile
-    const targetSize = isMobile ? 50 : 38;
+  function randRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
 
-    function randRange(min, max) {
-      return Math.random() * (max - min) + min;
+  function showBadge(text) {
+    const badge = document.createElement('div');
+    badge.textContent = text;
+    badge.style.background = '#e53935';
+    badge.style.padding = '6px 12px';
+    badge.style.marginTop = '5px';
+    badge.style.borderRadius = '8px';
+    badge.style.color = '#fff';
+    badge.style.fontWeight = 'bold';
+    badge.style.opacity = '1';
+    badge.style.transition = 'opacity 1.5s ease-out, transform 1.5s ease-out';
+    badgeContainer.appendChild(badge);
+    setTimeout(() => {
+      badge.style.opacity = '0';
+      badge.style.transform = 'translateY(-40px)';
+    }, 100);
+    setTimeout(() => badgeContainer.removeChild(badge), 1600);
+  }
+
+  function updateCombo() {
+    if (comboCount < 3) combo = 1;
+    else if (comboCount < 6) combo = 2;
+    else if (comboCount < 10) combo = 3;
+    else combo = 5;
+    comboDisplay.textContent = 'x' + combo;
+
+    // Reset combo if not hit a target in 3 seconds
+    if (comboTimeout) clearTimeout(comboTimeout);
+    comboTimeout = setTimeout(() => {
+      comboCount = 0;
+      combo = 1;
+      comboDisplay.textContent = 'x1';
+    }, 3000);
+  }
+
+  function createEntity(type) {
+    if (targets.length >= maxTargets) return;
+    const entity = document.createElement('div');
+    entity.style.position = 'absolute';
+    entity.style.userSelect = 'none';
+    entity.style.textAlign = 'center';
+
+    // Smaller size for decoys and some targets
+    let size = baseMaxSize;
+    if (type === 'decoy') size = randRange(25, 40);
+    else if (Math.random() < 0.3) size = randRange(25, baseMaxSize);
+
+    entity.style.fontSize = `${size - 15}px`;
+    entity.style.width = `${size}px`;
+    entity.style.height = `${size}px`;
+    entity.style.lineHeight = `${size}px`;
+    entity.style.borderRadius = '50%';
+
+    entity.style.background = type === 'hazard' ? '#a83232' : (type === 'powerup' ? '#f5d742' : (type === 'decoy' ? '#555' : '#d32f2f'));
+    entity.style.color = '#fff';
+    entity.style.cursor = 'pointer';
+    entity.style.boxShadow = '0 0 10px rgba(0,0,0,0.7)';
+    entity.style.transition = 'transform 0.1s ease';
+
+    const x = randRange(0, gameWidth - size);
+    const y = randRange(0, gameHeight - size);
+    entity.style.left = `${x}px`;
+    entity.style.top = `${y}px`;
+
+    if (type === 'normal') {
+      entity.textContent = targetEmojis[Math.floor(Math.random() * targetEmojis.length)];
+      entity.dataset.type = 'normal';
+    } else if (type === 'powerup') {
+      entity.textContent = powerupEmojis[Math.floor(Math.random() * powerupEmojis.length)];
+      entity.dataset.type = 'powerup';
+    } else if (type === 'hazard') {
+      entity.textContent = hazardEmojis[Math.floor(Math.random() * hazardEmojis.length)];
+      entity.dataset.type = 'hazard';
+    } else if (type === 'decoy') {
+      entity.textContent = decoyEmojis[Math.floor(Math.random() * decoyEmojis.length)];
+      entity.dataset.type = 'decoy';
     }
+    entity.dataset.size = size;
+    entity.shrinkSpeed = shrinkSpeedBase + Math.random(); // faster shrink speed on hard mode
 
-    function showBadge(text) {
-      const badge = document.createElement('div');
-      badge.textContent = text;
-      badge.style.background = '#e53935';
-      badge.style.padding = '6px 12px';
-      badge.style.marginTop = '5px';
-      badge.style.borderRadius = '8px';
-      badge.style.color = '#fff';
-      badge.style.fontWeight = 'bold';
-      badge.style.opacity = '1';
-      badge.style.transition = 'opacity 2s ease-out, transform 2s ease-out';
-      badgeContainer.appendChild(badge);
-      setTimeout(() => {
-        badge.style.opacity = '0';
-        badge.style.transform = 'translateY(-40px)';
-      }, 100);
-      setTimeout(() => badgeContainer.removeChild(badge), 2100);
-    }
+    entity.onclick = e => {
+      e.stopPropagation();
+      if (entity.dataset.type === 'normal') {
+        let points = 1 * combo;
+        if (powerupActive === 'double') points *= 2;
+        score += points;
+        comboCount++;
+        updateCombo();
+        scoreDisplay.textContent = score;
+        showBadge(`+${points}`);
 
-    function createTarget() {
-      if (freezeMovementUntil > Date.now()) return;
-
-      const roll = Math.random();
-      let type = 'normal';
-      if (roll < 0.1) type = 'powerup';
-      else if (roll < 0.18) type = 'hazard';
-
-      const target = document.createElement('div');
-      target.style.position = 'absolute';
-      target.style.width = targetSize + 'px';
-      target.style.height = targetSize + 'px';
-      target.style.fontSize = (targetSize - 12) + 'px';
-      target.style.lineHeight = targetSize + 'px';
-      target.style.textAlign = 'center';
-      target.style.top = randRange(0, gameArea.clientHeight - targetSize) + 'px';
-      target.style.userSelect = 'none';
-      target.style.transition = 'transform 0.2s ease';
-
-      // Randomize spawn side: 50% from left, 50% from right
-      if (Math.random() < 0.5) {
-        target.style.left = -targetSize + 'px';
-        target.direction = 1; // move right
-      } else {
-        target.style.left = (gameArea.clientWidth) + 'px';
-        target.direction = -1; // move left
-      }
-
-      target.speed = randRange(slowMotionActive ? 1 : targetSpeedBase, slowMotionActive ? 2 : targetSpeedBase + 2);
-      target.type = type;
-
-      if (type === 'normal') {
-        target.textContent = targetEmojis[Math.floor(Math.random() * targetEmojis.length)];
-      } else if (type === 'powerup') {
-        const pu = powerups[Math.floor(Math.random() * powerups.length)];
-        target.textContent = pu.emoji;
-        target.powerupData = pu;
-      } else {
-        const hz = hazards[Math.floor(Math.random() * hazards.length)];
-        target.textContent = hz.emoji;
-        target.hazardData = hz;
-      }
-
-      target.onclick = e => {
-        e.stopPropagation();
-        if (freezeMovementUntil > Date.now()) return;
-
-        if (target.type === 'normal') {
-          let points = 1 * combo;
-          if (activePowerup && activePowerup.name === 'Double Points') points *= 2;
-          if (activePowerup && activePowerup.name === 'Bonus Target') points = 5;
-
-          score += points;
-          comboCount++;
-          updateCombo();
-          scoreDisplay.textContent = score;
-
-          if (activePowerup && activePowerup.name === 'Rocket Shot') {
-            let cleared = 0;
-            targets.forEach(t => {
-              if (gameArea.contains(t)) {
-                gameArea.removeChild(t);
-                cleared++;
-              }
-            });
-            targets = [];
-            score += cleared * points;
-            showBadge(`🚀 Rocket Shot! +${cleared * points}`);
-            activePowerup = null;
-            powerupTimer = 0;
-            powerupDisplay.textContent = 'None';
-          }
-
-          gameArea.removeChild(target);
-          targets = targets.filter(t => t !== target);
+        gameArea.removeChild(entity);
+        targets = targets.filter(t => t !== entity);
+      } else if (entity.dataset.type === 'powerup') {
+        activatePowerup(entity.textContent);
+        gameArea.removeChild(entity);
+        targets = targets.filter(t => t !== entity);
+        comboCount = 0;
+        updateCombo();
+      } else if (entity.dataset.type === 'hazard') {
+        if (entity.textContent === '💣') {
+          score = Math.max(0, score - 3);
+          showBadge('💣 Bomb! -3 points');
+        } else if (entity.textContent === '⚡') {
+          timeLeft = Math.max(0, timeLeft - 5);
+          showBadge('⚡ Shock! -5s');
         }
-        else if (target.type === 'powerup') {
-          activatePowerup(target.powerupData);
-          gameArea.removeChild(target);
-          targets = targets.filter(t => t !== target);
+        scoreDisplay.textContent = score;
+        gameArea.removeChild(entity);
+        targets = targets.filter(t => t !== entity);
+        comboCount = 0;
+        updateCombo();
+      } else if (entity.dataset.type === 'decoy') {
+        // Decoys reset combo and reduce points
+        comboCount = 0;
+        score = Math.max(0, score - 2);
+        scoreDisplay.textContent = score;
+        showBadge('❌ Decoy! Combo reset & -2 points');
+        gameArea.removeChild(entity);
+        targets = targets.filter(t => t !== entity);
+        updateCombo();
+      }
+    };
+
+    gameArea.appendChild(entity);
+    targets.push(entity);
+  }
+
+  function activatePowerup(emoji) {
+    if (emoji === '⭐') {
+      powerupActive = 'double';
+      powerupTimer = 7;
+      powerupDisplay.textContent = 'Double Points ⭐';
+    } else if (emoji === '⏳') {
+      powerupActive = 'freeze';
+      powerupTimer = 4;
+      powerupDisplay.textContent = 'Freeze Time ⏳';
+      freezeTime = true;
+    }
+  }
+
+  function shrinkTargets() {
+    targets.forEach(target => {
+      let size = parseFloat(target.dataset.size);
+      size -= target.shrinkSpeed;
+      if (size <= baseMinSize) {
+        if (target.dataset.type === 'normal' && !freezeTime) {
           comboCount = 0;
           updateCombo();
-        }
-        else if (target.type === 'hazard') {
-          if (target.hazardData.name === 'Bomb') {
-            if (shieldActive) {
-              shieldActive = false;
-              powerupDisplay.textContent = 'Shield Broken!';
-              showBadge('🛡️ Shield Broken');
-            } else {
-              score = Math.max(0, score - 1);
-              comboCount = 0;
-              updateCombo();
-              showBadge('💣 Bomb Hit!');
-            }
-          }
-          else if (target.hazardData.name === 'Shock') {
-            timeLeft = Math.max(0, timeLeft - 2);
-            showBadge('⚡ Shock! -2s');
-          }
-          else if (target.hazardData.name === 'Sticky Trap') {
-            freezeMovementUntil = Date.now() + 2000;
-            showBadge('🕷️ Sticky Trap!');
-          }
+          score = Math.max(0, score - 2);
           scoreDisplay.textContent = score;
-          gameArea.removeChild(target);
-          targets = targets.filter(t => t !== target);
+          showBadge('Missed target! -2 points');
         }
-      };
+        if (gameArea.contains(target)) gameArea.removeChild(target);
+        targets = targets.filter(t => t !== target);
+      } else {
+        target.dataset.size = size;
+        target.style.width = `${size}px`;
+        target.style.height = `${size}px`;
+        target.style.lineHeight = `${size}px`;
+        target.style.fontSize = `${size - 15}px`;
+      }
+    });
+  }
 
-      gameArea.appendChild(target);
-      targets.push(target);
-    }
+  function gameTick() {
+    if (!freezeTime) timeLeft--;
+    timerDisplay.textContent = timeLeft;
 
-    function activatePowerup(pu) {
-      activePowerup = pu;
-      powerupTimer = pu.duration;
-      powerupDisplay.textContent = pu.name;
+    // Increase difficulty gradually
+    shrinkSpeedBase += 0.01; 
+    spawnIntervalTime = Math.max(300, spawnIntervalTime - 10);
 
-      if (pu.name === 'Bonus Target') {
-        score += 5;
-        scoreDisplay.textContent = score;
-        activePowerup = null;
-        powerupTimer = 0;
+    if (powerupTimer > 0) {
+      powerupTimer--;
+    } else {
+      if (powerupActive === 'double') {
         powerupDisplay.textContent = 'None';
-        showBadge('🔥 Bonus +5!');
-      }
-      if (pu.name === 'Slow Motion') {
-        slowMotionActive = true;
-      }
-      if (pu.name === 'Shield') {
-        shieldActive = true;
-      }
-      if (pu.name === 'Precision Aim') {
-        precisionAimActive = true;
-        gameArea.style.cursor = 'crosshair';
-      }
-      if (pu.name === 'Rocket Shot') {
-        // Rocket shot triggers instantly on click of a target (handled in click)
-      }
-    }
-
-    function updateCombo() {
-      if (comboCount < 3) combo = 1;
-      else if (comboCount < 6) combo = 2;
-      else if (comboCount < 10) combo = 3;
-      else combo = 5;
-      comboDisplay.textContent = 'x' + combo;
-
-      if (comboCount === 10) showBadge('🔥 Combo x5!');
-    }
-
-    function moveTargets() {
-      const now = Date.now();
-      if (freezeMovementUntil > now) return;
-
-      targets.forEach(target => {
-        let left = parseFloat(target.style.left);
-        left += target.speed * target.direction;
-        if (target.direction === 1 && left > gameArea.clientWidth) {
-          if (target.type === 'normal') {
-            comboCount = 0;
-            updateCombo();
-            score = Math.max(0, score - 1);
-            scoreDisplay.textContent = score;
-            showBadge('Missed target!');
-          }
-          gameArea.removeChild(target);
-          targets = targets.filter(t => t !== target);
-        } else if (target.direction === -1 && left < -targetSize) {
-          if (target.type === 'normal') {
-            comboCount = 0;
-            updateCombo();
-            score = Math.max(0, score - 1);
-            scoreDisplay.textContent = score;
-            showBadge('Missed target!');
-          }
-          gameArea.removeChild(target);
-          targets = targets.filter(t => t !== target);
-        } else {
-          target.style.left = left + 'px';
-        }
-      });
-    }
-
-    function gameTick() {
-      timeLeft--;
-      timerDisplay.textContent = timeLeft;
-
-      if (powerupTimer > 0) {
-        powerupTimer--;
-      } else if (activePowerup) {
-        if (activePowerup.name === 'Slow Motion') slowMotionActive = false;
-        if (activePowerup.name === 'Precision Aim') {
-          precisionAimActive = false;
-          gameArea.style.cursor = 'crosshair';
-        }
-        if (activePowerup.name === 'Shield') shieldActive = false;
-        activePowerup = null;
+        powerupActive = null;
+      } else if (powerupActive === 'freeze') {
         powerupDisplay.textContent = 'None';
-      }
-
-      moveTargets();
-
-      difficultyTimer++;
-      if (difficultyTimer % 30 === 0 && targetSpeedBase < (isMobile ? 8 : 6)) {
-        targetSpeedBase += 0.3; // gradually speed up
-      }
-
-      if (timeLeft <= 0) {
-        clearInterval(gameInterval);
-        clearInterval(spawnInterval);
-        targets.forEach(t => {
-          if (gameArea.contains(t)) gameArea.removeChild(t);
-        });
-        targets = [];
-        showBadge('🏆 Workout complete!');
-        startBtn.disabled = false;
+        powerupActive = null;
+        freezeTime = false;
       }
     }
 
-    function spawnTargets() {
-      createTarget();
+    shrinkTargets();
+
+    // Spawn targets, hazards, power-ups, and decoys
+    if (targets.length < maxTargets) {
+      const roll = Math.random();
+      if (roll < 0.5) createEntity('normal');
+      else if (roll < 0.65) createEntity('powerup');
+      else if (roll < 0.85) createEntity('hazard');
+      else createEntity('decoy');
     }
 
-    startBtn.onclick = () => {
-      startBtn.disabled = true;
-      timeLeft = 30;
-      score = 0;
-      combo = 1;
-      comboCount = 0;
-      targetSpeedBase = isMobile ? 4 : 2;
-      powerupTimer = 0;
-      activePowerup = null;
-      slowMotionActive = false;
-      shieldActive = false;
-      freezeMovementUntil = 0;
-      precisionAimActive = false;
-      powerupDisplay.textContent = 'None';
-      timerDisplay.textContent = timeLeft;
-      scoreDisplay.textContent = score;
-      comboDisplay.textContent = 'x1';
-      gameArea.style.cursor = 'crosshair';
+    if (timeLeft <= 0) {
+      clearInterval(gameInterval);
+      showBadge('🏆 Workout Complete!');
+      startBtn.disabled = false;
+    }
+  }
 
-      // Clear old targets
-      targets.forEach(t => {
-        if (gameArea.contains(t)) gameArea.removeChild(t);
-      });
-      targets = [];
+  function startGame() {
+    timeLeft = 30;
+    score = 0;
+    combo = 1;
+    comboCount = 0;
+    powerupActive = null;
+    powerupTimer = 0;
+    freezeTime = false;
+    shrinkSpeedBase = 0.8;
+    spawnIntervalTime = 900;
 
-      gameInterval = setInterval(gameTick, 1000);
-      spawnInterval = setInterval(spawnTargets, 700);
-    };
-  </script>
+    timerDisplay.textContent = timeLeft;
+    scoreDisplay.textContent = score;
+    comboDisplay.textContent = 'x1';
+    powerupDisplay.textContent = 'None';
+
+    targets.forEach(t => {
+      if (gameArea.contains(t)) gameArea.removeChild(t);
+    });
+    targets = [];
+
+    startBtn.disabled = true;
+    gameInterval = setInterval(gameTick, 1000);
+  }
+
+  startBtn.onclick = startGame;
+})();
+</script>
+
 </footer>
+
 
   
 </body>
