@@ -278,124 +278,127 @@
     background: #5c4033;
   }
 </style>
+<section id="reaction-game" style="background:#1a1a1a; padding:40px 20px; text-align:center; border-radius:16px; color:white; font-family:sans-serif;">
+  <h2 style="color:#00ffcc; font-size:28px;">⚡ Tap & Burn Challenge</h2>
+  <p style="margin-bottom:20px;">Tap as many fitness icons as you can. Score 20+ for 10% OFF a shirt!</p>
 
-<section id="reaction-game" style="background:#1a1a1a; padding:40px; text-align:center; border-radius:12px; margin:30px 0;">
-  <h2 style="color:#00ffcc; margin-bottom:20px;">⚡ Reaction Speed Challenge</h2>
-  <p>Tap fitness items as fast as you can!</p>
-  
-  <div id="game-container" style="width:100%; height:300px; position:relative; margin:20px auto; background:#222; border-radius:8px; overflow:hidden;">
-    <!-- Game elements appear here -->
-  </div>
-  
-  <div style="display:flex; justify-content:center; gap:20px; margin-top:20px;">
-    <button id="start-btn" style="background:#00ffcc; color:#000; border:none; padding:10px 20px; border-radius:6px; font-weight:bold; cursor:pointer;">START</button>
+  <div id="game-container" style="width:100%; max-width:400px; height:300px; margin:0 auto 20px; background:#222; border-radius:10px; position:relative; overflow:hidden; touch-action:manipulation;"></div>
+
+  <div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; align-items:center; margin-bottom:20px;">
+    <button id="start-btn" style="background:#00ffcc; color:#000; border:none; padding:12px 24px; border-radius:8px; font-weight:bold; cursor:pointer;">START</button>
     <p>Score: <span id="score">0</span></p>
     <p>Time: <span id="time">30s</span></p>
+  </div>
+
+  <div id="result-message" style="margin-top:10px; font-size:18px; color:#00ffcc;"></div>
+
+  <!-- MODAL -->
+  <div id="victory-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999; justify-content:center; align-items:center;">
+    <div style="background:#fff; color:#000; padding:30px; border-radius:12px; text-align:center; max-width:90%; width:320px;">
+      <h3 style="margin-bottom:10px;">🏆 Congrats!</h3>
+      <p>You scored 20+ and earned <strong>10% OFF</strong> your next shirt!</p>
+      <p style="margin:12px 0; font-size:16px;">Use code: <strong>FIT10</strong></p>
+      <button onclick="window.location.href='https://labwazi.github.io/salmannutrition/#shop'" style="margin-top:10px; background:#00cc99; color:#fff; padding:10px 20px; border:none; border-radius:6px; cursor:pointer;">Buy Now</button>
+      <br>
+      <button onclick="document.getElementById('victory-modal').style.display='none'" style="margin-top:10px; background:none; color:#333; border:none; cursor:pointer;">Close</button>
+    </div>
   </div>
 </section>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const container = document.getElementById('game-container');
-      const startBtn = document.getElementById('start-btn');
-      const scoreDisplay = document.getElementById('score');
-      const timeDisplay = document.getElementById('time');
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('game-container');
+  const startBtn = document.getElementById('start-btn');
+  const scoreDisplay = document.getElementById('score');
+  const timeDisplay = document.getElementById('time');
+  const resultMessage = document.getElementById('result-message');
+  const modal = document.getElementById('victory-modal');
 
-      let score = 0;
-      let timeLeft = 30;
-      let gameActive = false;
-      let timer;
-      let spawnInterval;
-      let difficultyLevel = 1;
+  const icons = ['🏋️', '🏃‍♂️', '🥊', '🧘‍♂️', '🚴‍♀️', '💣'];
+  let score = 0;
+  let timeLeft = 30;
+  let gameActive = false;
+  let timer, spawnInterval;
+  const WIN_SCORE = 20;
 
-      const icons = ['🏋️', '🏃', '🥊', '🧘', '🚴', '💣'];
+  startBtn.addEventListener('click', startGame);
 
-      startBtn.addEventListener('click', startGame);
+  function startGame() {
+    if (gameActive) return;
 
-      function startGame() {
-        if (gameActive) return;
+    score = 0;
+    timeLeft = 30;
+    gameActive = true;
+    scoreDisplay.textContent = score;
+    timeDisplay.textContent = `${timeLeft}s`;
+    resultMessage.textContent = '';
+    startBtn.textContent = 'PLAYING...';
+    container.innerHTML = '';
 
-        // Reset
-        container.innerHTML = '';
-        score = 0;
-        timeLeft = 30;
-        difficultyLevel = 1;
-        gameActive = true;
-        scoreDisplay.textContent = score;
-        timeDisplay.textContent = timeLeft + 's';
-        startBtn.textContent = 'PLAYING...';
+    timer = setInterval(() => {
+      timeLeft--;
+      timeDisplay.textContent = `${timeLeft}s`;
+      if (timeLeft <= 0) endGame();
+    }, 1000);
 
-        timer = setInterval(() => {
-          timeLeft--;
-          timeDisplay.textContent = timeLeft + 's';
+    spawnInterval = setInterval(spawnIcon, 700);
+  }
 
-          if (timeLeft % 10 === 0 && difficultyLevel < 4) {
-            difficultyLevel++;
-            adjustSpawnRate();
-          }
+  function spawnIcon() {
+    if (!gameActive) return;
 
-          if (timeLeft <= 0) endGame();
-        }, 1000);
+    const icon = document.createElement('div');
+    const chosen = icons[Math.floor(Math.random() * icons.length)];
+    icon.textContent = chosen;
+    icon.classList.add('icon');
+    icon.style.position = 'absolute';
+    icon.style.fontSize = '40px';
+    icon.style.cursor = 'pointer';
+    icon.style.userSelect = 'none';
+    icon.style.transition = 'transform 0.2s ease';
 
-        spawnInterval = setInterval(spawnIcon, 800);
+    const size = 40;
+    const maxX = container.clientWidth - size;
+    const maxY = container.clientHeight - size;
+    icon.style.left = Math.floor(Math.random() * maxX) + 'px';
+    icon.style.top = Math.floor(Math.random() * maxY) + 'px';
+
+    icon.addEventListener('click', () => {
+      if (!gameActive) return;
+      if (chosen === '💣') {
+        score = Math.max(0, score - 2);
+      } else {
+        score++;
       }
-
-      function adjustSpawnRate() {
-        clearInterval(spawnInterval);
-        const rate = 800 - difficultyLevel * 200; // 800, 600, 400, 200
-        spawnInterval = setInterval(spawnIcon, rate);
-      }
-
-      function spawnIcon() {
-        if (!gameActive) return;
-
-        const icon = document.createElement('div');
-        const chosenIcon = icons[Math.floor(Math.random() * icons.length)];
-        icon.textContent = chosenIcon;
-        icon.style.position = 'absolute';
-        icon.style.fontSize = '30px'; // Smaller size
-        icon.style.cursor = 'pointer';
-        icon.style.userSelect = 'none';
-
-        const x = Math.random() * (container.offsetWidth - 40);
-        const y = Math.random() * (container.offsetHeight - 40);
-        icon.style.left = x + 'px';
-        icon.style.top = y + 'px';
-
-        icon.addEventListener('click', () => {
-          if (!gameActive) return;
-          if (chosenIcon === '💣') {
-            score = Math.max(0, score - 2);
-          } else {
-            score++;
-          }
-          scoreDisplay.textContent = score;
-          icon.remove();
-        });
-
-        // Slight move effect
-        setTimeout(() => {
-          icon.style.left = (x + 20 * (Math.random() - 0.5)) + 'px';
-          icon.style.top = (y + 20 * (Math.random() - 0.5)) + 'px';
-        }, 300);
-
-        // Auto-remove quickly
-        setTimeout(() => {
-          if (icon.parentNode) icon.remove();
-        }, 600); // Less visible time
-
-        container.appendChild(icon);
-      }
-
-      function endGame() {
-        gameActive = false;
-        clearInterval(timer);
-        clearInterval(spawnInterval);
-        startBtn.textContent = 'PLAY AGAIN';
-        container.innerHTML = `<div style="color:#00ffcc; font-size:24px; text-align:center; margin-top:100px;">Game Over! Score: ${score}</div>`;
-      }
+      scoreDisplay.textContent = score;
+      icon.style.transform = 'scale(1.4)';
+      setTimeout(() => icon.remove(), 100);
     });
-  </script>
+
+    container.appendChild(icon);
+
+    // Auto-remove
+    setTimeout(() => {
+      if (icon.parentNode) icon.remove();
+    }, 1000);
+  }
+
+  function endGame() {
+    gameActive = false;
+    clearInterval(timer);
+    clearInterval(spawnInterval);
+    startBtn.textContent = 'PLAY AGAIN';
+    container.innerHTML = '';
+
+    if (score >= WIN_SCORE) {
+      modal.style.display = 'flex';
+    } else {
+      resultMessage.textContent = `Nice try! Score ${WIN_SCORE}+ for a reward.`;
+    }
+  }
+});
+</script>
+
 
 <section id="shop">
   <h2>🛍️ Shop – Explore Our Gear</h2>
