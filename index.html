@@ -484,11 +484,27 @@
       <h3 style="color:#111;">🏆 You Got:</h3>
       <p id="reward-text" style="font-size:18px; font-weight:bold; color:#00aa88; word-wrap: break-word;"></p>
       <button id="shop-btn" style="margin-top:15px; background:#00cc99; color:#fff; padding:10px 20px; border:none; border-radius:6px; cursor:pointer;">Go to Shop</button>
+      
+      <button id="share-whatsapp" style="margin-top:10px; background:#25D366; color:#fff; padding:10px 20px; border:none; border-radius:6px; cursor:pointer;">
+        Share on WhatsApp
+      </button>
+      
       <br>
       <button id="close-modal" style="margin-top:10px; background:none; color:#333; border:none; cursor:pointer;">Close</button>
     </div>
   </div>
 </section>
+
+<script>
+  // WhatsApp Share button functionality
+  document.getElementById('share-whatsapp').addEventListener('click', () => {
+    const reward = document.getElementById('reward-text').textContent;
+    const message = encodeURIComponent(`I just won "${reward}" from The Fitness Wheelie! Try your luck and spin now! 🎉🏆`);
+    const whatsappUrl = `https://wa.me/?text=${message}`;
+    window.open(whatsappUrl, '_blank');
+  });
+</script>
+
 
 <!-- Professional Pool Game Section -->
 <div class="pool-container">
