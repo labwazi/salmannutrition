@@ -375,50 +375,135 @@
       position: relative;
     }
     
-    .contact-card {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 30px;
-      background: rgba(26, 26, 26, 0.7);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      border: 1px solid rgba(0,255,204,0.3);
-      padding: 40px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-    
-    .glow-card {
-      display: flex;
-      align-items: center;
-      padding: 20px;
-      margin-bottom: 25px;
-      border-radius: 12px;
-      background: rgba(34, 34, 34, 0.7);
-      border: 1px solid rgba(0,255,204,0.2);
-      transition: all 0.3s ease;
-    }
-    
-    .glow-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 20px rgba(0,255,204,0.3);
-      border-color: #00ffcc;
-    }
-    
-    .icon-wrapper {
-      width: 60px;
-      height: 60px;
-      background: rgba(0,255,204,0.1);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 20px;
-      border: 1px solid #00ffcc;
-      box-shadow: 0 0 15px rgba(0,255,204,0.3);
-      font-size: 24px;
-      color: var(--primary);
-    }
+    <style>
+.contact-section {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  padding: 3rem 0;
+  color: white;
+  font-family: 'Arial', sans-serif;
+}
+
+.contact-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  background: linear-gradient(90deg, #ff8a00, #e52e71);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: titleGlow 3s infinite alternate;
+}
+
+.contact-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.contact-info, .contact-social {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.piano-key {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 100px;
+}
+
+.piano-key::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.piano-key:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.piano-key:hover::before {
+  left: 100%;
+}
+
+.icon-wrapper {
+  font-size: 2rem;
+  margin-right: 20px;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.piano-key:hover .icon-wrapper {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+.contact-details h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.contact-details p, .contact-details a {
+  margin: 0;
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contact-details a:hover {
+  color: #ff8a00;
+}
+
+/* Piano key animations */
+@keyframes pianoGlow {
+  0% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
+  100% { box-shadow: 0 0 20px rgba(255, 138, 0, 0.7); }
+}
+
+@keyframes titleGlow {
+  0% { text-shadow: 0 0 5px rgba(255, 138, 0, 0.3); }
+  100% { text-shadow: 0 0 15px rgba(229, 46, 113, 0.7); }
+}
+
+/* Sequential animation for piano keys */
+.piano-key:nth-child(1) { animation: pianoGlow 2s infinite alternate; }
+.piano-key:nth-child(2) { animation: pianoGlow 2s infinite alternate 0.5s; }
+.piano-key:nth-child(3) { animation: pianoGlow 2s infinite alternate 1s; }
+.piano-key:nth-child(4) { animation: pianoGlow 2s infinite alternate 1.5s; }
+</style>
+<style>
     
     /* Responsive design */
     @media (max-width: 768px) {
@@ -706,14 +791,14 @@
     <div class="contact-card">
       <!-- Contact Info -->
       <div class="contact-info">
-        <div class="contact-method glow-card">
+        <div class="contact-method piano-key">
           <div class="icon-wrapper">📍</div>
           <div class="contact-details">
             <h3>Our Location</h3>
             <p>Camp Yoloff, Port Louis, Mauritius</p>
           </div>
         </div>
-        <div class="contact-method glow-card">
+        <div class="contact-method piano-key">
           <div class="icon-wrapper">📞</div>
           <div class="contact-details">
             <h3>Phone</h3>
@@ -723,14 +808,14 @@
       </div>
       <!-- Social Media -->
       <div class="contact-social">
-        <div class="contact-method glow-card">
+        <div class="contact-method piano-key">
           <div class="icon-wrapper">💬</div>
           <div class="contact-details">
             <h3>WhatsApp</h3>
             <p><a href="https://wa.me/23058127138" target="_blank">Message Now</a></p>
           </div>
         </div>
-        <div class="contact-method glow-card">
+        <div class="contact-method piano-key">
           <div class="icon-wrapper">👍</div>
           <div class="contact-details">
             <h3>Facebook</h3>
@@ -1314,12 +1399,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<style>
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-</style>
 
   
 </body>
