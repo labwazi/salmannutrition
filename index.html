@@ -1398,7 +1398,326 @@ document.addEventListener('DOMContentLoaded', function() {
   showRandomQuote();
 });
 </script>
+<div id="wa-chat-widget">
+  <!-- Closed State -->
+  <div id="wa-launcher">
+    <div class="unread-pulse"></div>
+    <div class="wa-icon">💬</div>
+    <div class="wa-text">
+      <div class="wa-title">Chat with Us</div>
+      <div class="wa-subtitle">Typically replies in 2 minutes</div>
+    </div>
+  </div>
 
+  <!-- Chat Window -->
+  <div id="wa-chat-window">
+    <div class="chat-header">
+      <div class="header-info">
+        <div class="wa-avatar">👕</div>
+        <div>
+          <div class="chat-title">Tee Support</div>
+          <div class="chat-status">Online now</div>
+        </div>
+      </div>
+      <div class="close-chat">×</div>
+    </div>
+
+    <div class="chat-messages">
+      <div class="message bot">
+        Hi there! This chat connects directly to our WhatsApp. Ask about MMA, anime, or custom tees!
+      </div>
+      <div class="message bot">
+        Type your question and we'll message you on WhatsApp immediately.
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <input type="text" placeholder="Type your question..." id="wa-input">
+      <button id="wa-send">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path fill="currentColor" d="M1.101 21.757L23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  #wa-chat-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  /* Launcher Button */
+  #wa-launcher {
+    width: 260px;
+    height: 60px;
+    background: #ffffff;
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  #wa-launcher:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .unread-pulse {
+    width: 12px;
+    height: 12px;
+    background: #25D366;
+    border-radius: 50%;
+    margin-right: 12px;
+    animation: pulse 1.5s infinite;
+  }
+
+  .wa-icon {
+    font-size: 24px;
+    margin-right: 12px;
+    background: #25D366;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wa-text {
+    flex: 1;
+  }
+
+  .wa-title {
+    font-weight: 600;
+    color: #333;
+  }
+
+  .wa-subtitle {
+    font-size: 13px;
+    color: #666;
+  }
+
+  /* Chat Window */
+  #wa-chat-window {
+    width: 320px;
+    height: 400px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+  }
+
+  .chat-header {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #075E54;
+    color: white;
+  }
+
+  .header-info {
+    display: flex;
+    align-items: center;
+    color: white;
+  }
+
+  .wa-avatar {
+    font-size: 28px;
+    margin-right: 12px;
+  }
+
+  .chat-title {
+    font-weight: 600;
+  }
+
+  .chat-status {
+    font-size: 12px;
+    opacity: 0.8;
+  }
+
+  .close-chat {
+    font-size: 24px;
+    color: white;
+    opacity: 0.8;
+    cursor: pointer;
+    padding: 5px;
+  }
+
+  .chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: #ECE5DD;
+  }
+
+  .message {
+    margin-bottom: 15px;
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 18px;
+    line-height: 1.4;
+    position: relative;
+    animation: fadeIn 0.3s ease;
+    font-size: 14px;
+  }
+
+  .bot {
+    background: white;
+    color: #111;
+    border-top-left-radius: 4px;
+    align-self: flex-start;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+  }
+
+  .chat-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background: #f0f0f0;
+  }
+
+  #wa-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 24px;
+    outline: none;
+    font-size: 14px;
+  }
+
+  #wa-send {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #25D366;
+    color: white;
+    border: none;
+    margin-left: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  /* Animations */
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Mobile Responsiveness */
+  @media (max-width: 480px) {
+    #wa-chat-widget {
+      bottom: 10px;
+      right: 10px;
+    }
+    
+    #wa-launcher {
+      width: 60px;
+      height: 60px;
+      justify-content: center;
+    }
+    
+    .wa-text, .unread-pulse {
+      display: none;
+    }
+    
+    #wa-chat-window {
+      width: calc(100vw - 20px);
+      height: 60vh;
+      bottom: 80px;
+      right: 10px;
+    }
+  }
+</style>
+
+<script>
+  // DOM elements
+  const launcher = document.getElementById('wa-launcher');
+  const chatWindow = document.getElementById('wa-chat-window');
+  const messageInput = document.getElementById('wa-input');
+  const sendButton = document.getElementById('wa-send');
+  const closeButton = document.querySelector('.close-chat');
+  const messageContainer = document.querySelector('.chat-messages');
+
+  // WhatsApp number and message
+  const whatsappNumber = "YOUR_WHATSAPP_NUMBER"; // Include country code
+  const defaultMessage = "Hi! I saw your t-shirts and wanted to ask: ";
+
+  // Open/close chat
+  launcher.addEventListener('click', () => {
+    chatWindow.style.display = 'flex';
+    launcher.style.display = 'none';
+  });
+
+  closeButton.addEventListener('click', () => {
+    chatWindow.style.display = 'none';
+    launcher.style.display = 'flex';
+  });
+
+  // Send message to WhatsApp
+  function sendToWhatsApp() {
+    const userMessage = messageInput.value.trim();
+    if (!userMessage) return;
+
+    // Create user message bubble
+    const userBubble = document.createElement('div');
+    userBubble.className = 'message user';
+    userBubble.textContent = userMessage;
+    messageContainer.appendChild(userBubble);
+
+    // Create confirmation message
+    const botBubble = document.createElement('div');
+    botBubble.className = 'message bot';
+    botBubble.innerHTML = 'Perfect! We\'re opening WhatsApp now to continue the conversation...';
+    messageContainer.appendChild(botBubble);
+
+    // Scroll to bottom
+    messageContainer.scrollTop = messageContainer.scrollHeight;
+    messageInput.value = '';
+
+    // Encode message for WhatsApp URL
+    const encodedMessage = encodeURIComponent(defaultMessage + userMessage);
+    
+    // Open WhatsApp
+    setTimeout(() => {
+      window.open(`https://wa.me/${23058127138}?text=${encodedMessage}`, '_blank');
+    }, 1000);
+  }
+
+  // Event listeners
+  sendButton.addEventListener('click', sendToWhatsApp);
+  messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendToWhatsApp();
+  });
+
+  // Mobile back button handling
+  window.addEventListener('popstate', function() {
+    chatWindow.style.display = 'none';
+    launcher.style.display = 'flex';
+  });
+</script>
 
   
 </body>
